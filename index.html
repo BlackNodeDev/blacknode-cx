@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="BlackNode — the front door for Core, the autonomous engine, and the rest of the stack. The live engine runs at Core.">
+  <title>BlackNode — The Autonomous Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0f'/%3E%3Crect x='3' y='3' width='6' height='2' fill='%23e024d6'/%3E%3Crect x='3' y='3' width='2' height='6' fill='%23e024d6'/%3E%3Crect x='23' y='27' width='6' height='2' fill='%23e024d6'/%3E%3Crect x='27' y='23' width='2' height='6' fill='%23e024d6'/%3E%3Ccircle cx='16' cy='16' r='5' fill='none' stroke='%23e024d6' stroke-width='2'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #101016;
+      --box: #0c0c14;
+      --border: #2a2a38;
+      --border-soft: #222230;
+      --mg: #e024d6;
+      --mg-glow: #ff2de0;
+      --zinc: #a1a1aa;
+      --mute: #7a7a8a;
+      --text: #e8e8ed;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+      --sans: 'Space Grotesk', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.5;
+      min-height: 100dvh;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    a { color: inherit; }
+    .grid-bg {
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(224,36,214,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(224,36,214,0.035) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none; z-index: -1;
+    }
+    .wrap {
+      width: min(1080px, 100%);
+      margin: 0 auto;
+      padding: 1.15rem 1.15rem 3.5rem;
+    }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 0.8rem; margin-bottom: 1.35rem;
+    }
+    .brand {
+      font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.8px;
+      color: #c8c8d4; text-decoration: none;
+    }
+    .brand .slash { color: var(--mute); }
+    .brand .cx { color: #fff; font-weight: 700; }
+    .core-link {
+      font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.6px;
+      color: var(--mg); text-decoration: none; white-space: nowrap;
+    }
+    .core-link:hover { text-shadow: 0 0 12px rgba(224,36,214,0.55); }
+
+    .version-chip {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      border: 1px solid #2e2e3a; background: rgba(16,16,22,0.8);
+      padding: 0.4rem 0.7rem; font-family: var(--mono); font-size: 0.68rem;
+      letter-spacing: 0.6px; color: #c8c8d4; margin-bottom: 1.5rem;
+    }
+    .version-chip .prompt { color: var(--mg); }
+    .version-chip strong { color: #fff; font-weight: 700; }
+
+    h1 {
+      font-size: clamp(2.7rem, 9vw, 4.4rem);
+      font-weight: 700;
+      line-height: 0.92;
+      letter-spacing: -1.5px;
+      margin-bottom: 1.05rem;
+    }
+    h1 .mg {
+      color: var(--mg);
+      text-shadow: 0 0 30px rgba(224,36,214,0.7), 0 0 60px rgba(224,36,214,0.35);
+    }
+    .lead {
+      font-size: 1.05rem; color: var(--zinc); line-height: 1.55;
+      margin-bottom: 1.6rem; max-width: 40rem;
+    }
+
+    .kv2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem;
+      margin-bottom: 1.15rem;
+    }
+
+    .cyber-box {
+      position: relative;
+      background: var(--box);
+      border: 1px solid var(--border);
+      padding: 0.95rem 0.85rem;
+      min-height: 100px;
+    }
+    .cyber-box::before, .cyber-box::after {
+      content: ''; position: absolute; width: 9px; height: 9px;
+      border-color: var(--mg); border-style: solid; pointer-events: none;
+    }
+    .cyber-box::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .cyber-box::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+    .cyber-box .k {
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 1px;
+      color: var(--mute); text-transform: uppercase; margin-bottom: 0.35rem;
+    }
+    .cyber-box .v { font-weight: 700; font-size: 0.88rem; line-height: 1.25; }
+    .cyber-box .v.mg { color: var(--mg); }
+    .cyber-box p {
+      margin-top: 0.4rem;
+      font-size: 0.84rem;
+      color: var(--zinc);
+      font-weight: 400;
+      line-height: 1.45;
+    }
+
+    .actions { margin-bottom: 3rem; }
+    .btn-solid, .btn-ghost {
+      display: block; width: 100%; text-align: center;
+      text-decoration: none; border-radius: 1px; cursor: pointer;
+    }
+    @media (min-width: 400px) {
+      .btn-solid, .btn-ghost { white-space: nowrap; }
+    }
+    .btn-solid {
+      background: var(--mg); color: #000;
+      padding: 0.95rem; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; font-size: 0.88rem;
+      font-family: var(--sans); margin-bottom: 0.65rem; border: none;
+    }
+    .btn-solid:hover { filter: brightness(1.08); }
+    .btn-solid:focus-visible, .btn-ghost:focus-visible, .eco-card:focus-visible, .core-link:focus-visible {
+      outline: 2px solid var(--mg); outline-offset: 3px;
+    }
+    .btn-ghost {
+      background: transparent; color: #e0e0e8;
+      padding: 0.85rem; font-weight: 600; letter-spacing: 0.6px;
+      text-transform: uppercase; border: 1px solid #333340;
+      font-size: 0.82rem; font-family: var(--sans);
+    }
+    .btn-ghost:hover { border-color: var(--mg); color: var(--mg); }
+
+    section { margin-bottom: 2.75rem; }
+    .sec-label {
+      font-family: var(--mono); font-size: 0.66rem; letter-spacing: 1.2px;
+      color: var(--mute); text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+    h2 {
+      font-size: clamp(1.45rem, 4.5vw, 2rem);
+      font-weight: 700; letter-spacing: -0.4px;
+      line-height: 1.15; margin-bottom: 0.65rem;
+    }
+    .sec-lead {
+      color: var(--zinc); font-size: 0.98rem; line-height: 1.55;
+      margin-bottom: 1rem; max-width: 40rem;
+    }
+
+    .pillars, .os-grid, .guard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem;
+    }
+    .split {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.7rem;
+    }
+
+    .eco {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.7rem;
+    }
+    .eco-card {
+      position: relative;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 0.8rem;
+      background: var(--box);
+      border: 1px solid var(--border);
+      padding: 0.95rem 1rem;
+      text-decoration: none;
+      color: inherit;
+      min-height: 100%;
+    }
+    a.eco-card:hover { border-color: var(--mg); }
+    .eco-card .name {
+      font-weight: 700; font-size: 0.98rem; line-height: 1.25;
+      margin-bottom: 0.2rem;
+    }
+    .eco-card .blurb {
+      font-size: 0.78rem; color: var(--zinc); line-height: 1.4;
+    }
+    .tag {
+      flex-shrink: 0;
+      font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.7px;
+      text-transform: uppercase; padding-top: 0.15rem;
+    }
+    .tag.live { color: var(--mg); }
+    .tag.wip, .tag.beta, .tag.private { color: var(--mute); }
+
+    footer {
+      border-top: 1px solid var(--border-soft);
+      padding-top: 1.4rem;
+      margin-top: 1rem;
+    }
+    footer .foot-brand {
+      font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.8px;
+      margin-bottom: 0.45rem;
+    }
+    footer .foot-brand strong { color: #fff; }
+    footer p { font-size: 0.82rem; color: var(--zinc); line-height: 1.5; }
+    footer .mute { color: var(--mute); font-size: 0.75rem; margin-top: 0.55rem; }
+
+    @media (max-width: 380px) {
+      .kv2, .pillars, .os-grid, .guard-grid { grid-template-columns: 1fr; }
+      h1 { letter-spacing: -1px; }
+    }
+    @media (min-width: 720px) {
+      .wrap { padding: 1.7rem 1.75rem 4.5rem; }
+      .actions {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 0.7rem;
+        align-items: stretch;
+        margin-bottom: 3rem;
+      }
+      .btn-solid { margin-bottom: 0; }
+      .eco { grid-template-columns: 1fr 1fr; }
+      .split { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 1080px) {
+      .wrap { padding: 2rem 1.5rem 5rem; }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.25fr 0.85fr;
+        gap: 2.4rem;
+        align-items: start;
+        margin-bottom: 3.4rem;
+      }
+      .hero-aside { padding-top: 3.15rem; }
+      .hero-grid .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+        margin-bottom: 0;
+      }
+      .hero-grid .btn-solid, .hero-grid .btn-ghost { width: 100%; margin-bottom: 0; }
+      .eco { grid-template-columns: 1fr 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand"><span class="cx">BLACKNODE</span> <span class="slash">//</span> blacknode.cx</div>
+      <a class="core-link" href="https://perchance.org/y9qo8heenv#coreorc" target="_blank" rel="noopener noreferrer">CORE ↗</a>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <div class="version-chip"><span class="prompt">&gt;</span> SYSTEM VERSION: <strong>Q1 2026.4</strong></div>
+        <h1>THE<br><span class="mg">AUTONOMOUS</span><br>ENGINE</h1>
+        <p class="lead">A front door for BlackNode. Agentic orchestration behind a conversational pane of glass. The live engine runs at Core — this page is the map, not the machine.</p>
+      </div>
+      <div class="hero-aside">
+        <div class="kv2">
+          <div class="cyber-box">
+            <div class="k">EXECUTION_MODE</div>
+            <div class="v">CLOSED-LOOP //<br>ZERO-MOCK</div>
+          </div>
+          <div class="cyber-box">
+            <div class="k">TARGET_RUNTIME</div>
+            <div class="v mg">GODOT 4.x + LIVE<br>SANDBOX</div>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="btn-solid" href="https://perchance.org/y9qo8heenv#coreorc" target="_blank" rel="noopener noreferrer">LAUNCH BLACKNODE CORE →</a>
+          <a class="btn-ghost" href="#ecosystem">EXPLORE THE ECOSYSTEM</a>
+        </div>
+      </div>
+    </div>
+
+    <section id="pipeline" aria-labelledby="pipeline-title">
+      <div class="sec-label">01 // EXECUTION ARCHITECTURE</div>
+      <h2 id="pipeline-title">The Zero-Placeholder Pipeline</h2>
+      <p class="sec-lead">Core is built to take architectural intent and run a closed loop — not a one-shot snippet. Scan context, generate typed code, audit for secrets, and hand back a complete, executable file. That cycle lives in Core, not on this page.</p>
+      <div class="split">
+        <div class="cyber-box">
+          <div class="k">STANDARD AI // LEGACY_MODE</div>
+          <div class="v">ISOLATED SNIPPETS</div>
+          <p>A text prompt in, a partial function out, often with a TODO still sitting in the body. The cycle stops short of something you can run.</p>
+        </div>
+        <div class="cyber-box">
+          <div class="k">BLACKNODE CORE // TEXT_IN::V3.0</div>
+          <div class="v mg">01 SCAN  02 TYPED  03 AUDIT</div>
+          <p>Multi-file context, type-safe generation, and a zero-secret audit. Status in Core reads CYCLE_COMPLETE // READY_DEPLOY when the loop finishes.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pillars" aria-labelledby="pillars-title">
+      <div class="sec-label">02 // ORCHESTRATION TOPOLOGY</div>
+      <h2 id="pillars-title">The Four Agentic Pillars</h2>
+      <p class="sec-lead">Planning, Coding, Review, and Operations — the same cycle the Orchestrator drives in Core.</p>
+      <div class="pillars">
+        <div class="cyber-box">
+          <div class="k">QUADRANT A // PLANNING</div>
+          <div class="v">Architectural Orchestration</div>
+          <p>Break a goal into decoupled services, state schemas, and a dependency graph before any file is written.</p>
+        </div>
+        <div class="cyber-box">
+          <div class="k">QUADRANT B // CODING</div>
+          <div class="v">Multi-File Implementation</div>
+          <p>Deep workspace scans, low-overhead execution, and patches in unified Git diff format.</p>
+        </div>
+        <div class="cyber-box">
+          <div class="k">QUADRANT C // REVIEW</div>
+          <div class="v">Automated Governance</div>
+          <p>OWASP-style vulnerability checks and secret protection. Credentials are not stored in the page.</p>
+        </div>
+        <div class="cyber-box">
+          <div class="k">QUADRANT D // OPERATIONS</div>
+          <div class="v">Autonomous Triage</div>
+          <p>Parse runtime logs, isolate the failing line, and deploy a diagnostic patch from inside Core.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="orchestrator" aria-labelledby="orch-title">
+      <div class="sec-label">03 // ORCHESTRATOR + VEHICLE</div>
+      <h2 id="orch-title">Orchestrator and the Godot Vehicle</h2>
+      <p class="sec-lead">The Orchestrator is the general brain above every vehicle: sessions, pipeline stages, brain tier, guardrails, and verification. Godot is the proof — a live viewport that runs what the agent compiles. Both live in Core.</p>
+      <div class="split">
+        <div class="cyber-box">
+          <div class="k">04 // CORE ORCHESTRATOR</div>
+          <div class="v">Sessions, stages, verification</div>
+          <p>A conversational console for the whole platform. Prompt dispatch, persisted threads, and an independent verifier after compile. This is the product surface.</p>
+        </div>
+        <div class="cyber-box">
+          <div class="k">04B // VEHICLE_PROOF</div>
+          <div class="v mg">GODOT VIEWPORT — LIVE IN CORE</div>
+          <p>A mobile-first Godot sandbox used as the proof-of-concept vehicle. Natural language in, typed GDScript and a playable scene out, in the same engine as the console.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="studio" aria-labelledby="studio-title">
+      <div class="sec-label">04 // STUDIO OS</div>
+      <h2 id="studio-title">Docs, Grid, Vault, AI</h2>
+      <p class="sec-lead">An offline studio fused into Core. Local-first, keyless, and stored per user on the device.</p>
+      <div class="os-grid">
+        <div class="cyber-box">
+          <div class="k">DOCS</div>
+          <div class="v">Offline markdown</div>
+          <p>Source on one side, rendered reading view on the other. Autosaves locally.</p>
+        </div>
+        <div class="cyber-box">
+          <div class="k">GRID</div>
+          <div class="v">Formula sheet</div>
+          <p>A real engine for refs, ranges, SUM, IF, and the usual sheet functions. Export to CSV.</p>
+        </div>
+        <div class="cyber-box">
+          <div class="k">VAULT</div>
+          <div class="v">On-device, per user</div>
+          <p>Secrets stay on the device and are redacted in the audit log. Nothing is uploaded.</p>
+        </div>
+        <div class="cyber-box">
+          <div class="k">NODECORE AI</div>
+          <div class="v">Same brain tier</div>
+          <p>Tools-first retrieval over docs and sheets, then synthesis. No raw keys in the client.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="guardrails" aria-labelledby="guard-title">
+      <div class="sec-label">05 // GUARDRAILS</div>
+      <h2 id="guard-title">Allow, Ask, Deny</h2>
+      <p class="sec-lead">Sensitive actions are gated in Core. Approvals happen there — this page does not run the engine, and it cannot approve anything on your behalf.</p>
+      <div class="guard-grid">
+        <div class="cyber-box">
+          <div class="k">POLICY</div>
+          <div class="v">ALLOW // ASK // DENY</div>
+          <p>Each rule can be cycled in Core. Ask prompts a one-time or session approval; deny blocks the action.</p>
+        </div>
+        <div class="cyber-box">
+          <div class="k">AUDIT LOG</div>
+          <div class="v">Hash-chained</div>
+          <p>Every event lands in a tamper-evident chain you can verify and export.</p>
+        </div>
+        <div class="cyber-box">
+          <div class="k">VERIFIER</div>
+          <div class="v">Independent second judge</div>
+          <p>A compile can face a second pass with no prior context from the first brain.</p>
+        </div>
+        <div class="cyber-box">
+          <div class="k">SECRETS</div>
+          <div class="v">Zero credentials stored</div>
+          <p>The page does not keep organisation fingerprints or keys in code.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="ecosystem" aria-labelledby="eco-title">
+      <div class="sec-label">06 // ECOSYSTEM</div>
+      <h2 id="eco-title">The Rest of the Stack</h2>
+      <p class="sec-lead">Live cards open a public URL. Everything else is still on the workbench — tagged, not linked.</p>
+      <div class="eco">
+        <a class="eco-card" href="https://blacknodedev.github.io/blacknode-engine/" target="_blank" rel="noopener noreferrer">
+          <div>
+            <div class="name">BlackNode Engine</div>
+            <div class="blurb">The official Godot 4.7.2 editor, compiled to WebAssembly and running in the browser. Scene tree, script editor, inspector, and project manager in one tab.</div>
+          </div>
+          <span class="tag live">LIVE</span>
+        </a>
+        <a class="eco-card" href="https://blacknodedev.github.io/blacknode-launcher/" target="_blank" rel="noopener noreferrer">
+          <div>
+            <div class="name">BlackNode Launcher</div>
+            <div class="blurb">A phone-first system shell: home, notes, recents, and factory programs. Separate from Lumen.</div>
+          </div>
+          <span class="tag live">LIVE</span>
+        </a>
+        <a class="eco-card" href="https://blacknodedev.github.io/lumen-launcher/" target="_blank" rel="noopener noreferrer">
+          <div>
+            <div class="name">Lumen Launcher</div>
+            <div class="blurb">A personal web app shelf for the phone — programs, notes, and recents in a portrait shell.</div>
+          </div>
+          <span class="tag live">LIVE</span>
+        </a>
+        <a class="eco-card" href="https://blacknodedev.github.io/lumen-deploy/" target="_blank" rel="noopener noreferrer">
+          <div>
+            <div class="name">Lumen Deploy</div>
+            <div class="blurb">A mobile-first dashboard for publishing a static app to GitHub Pages. The token stays in this browser and is sent only to GitHub.</div>
+          </div>
+          <span class="tag live">LIVE</span>
+        </a>
+        <div class="eco-card" aria-disabled="true">
+          <div>
+            <div class="name">BlackNode Suite</div>
+            <div class="blurb">A mobile-first privacy suite: Pass, Drive, Calendar, and Docs. On-device. This one stays private.</div>
+          </div>
+          <span class="tag private">PRIVATE</span>
+        </div>
+        <div class="eco-card" aria-disabled="true">
+          <div>
+            <div class="name">BlackNode Platform</div>
+            <div class="blurb">A single mobile shell with slices for Game Studio, Suite, and Assistant. Local prototype — not published.</div>
+          </div>
+          <span class="tag wip">WIP</span>
+        </div>
+        <div class="eco-card" aria-disabled="true">
+          <div>
+            <div class="name">BlackNode Vault</div>
+            <div class="blurb">A standalone on-device vault. Still on the workbench.</div>
+          </div>
+          <span class="tag wip">WIP</span>
+        </div>
+        <div class="eco-card" aria-disabled="true">
+          <div>
+            <div class="name">BlackLlama</div>
+            <div class="blurb">Single-file AI chat with local memory, optional image generation, Wikipedia search, and a sandboxed HTML preview.</div>
+          </div>
+          <span class="tag beta">BETA</span>
+        </div>
+        <div class="eco-card" aria-disabled="true">
+          <div>
+            <div class="name">Hydrogen Playground</div>
+            <div class="blurb">A phone-first super-agent playground: a planner, parallel tools, a generative canvas, and an on-device vault. Independent project.</div>
+          </div>
+          <span class="tag beta">BETA</span>
+        </div>
+        <div class="eco-card" aria-disabled="true">
+          <div>
+            <div class="name">Glow Canvas</div>
+            <div class="blurb">A phone-first web app builder with chat, live preview, code, and version history.</div>
+          </div>
+          <span class="tag private">PRIVATE</span>
+        </div>
+        <div class="eco-card" aria-disabled="true">
+          <div>
+            <div class="name">UmiShell</div>
+            <div class="blurb">A local AI command shell with allow / ask / deny guardrails, an on-device vault, and a hash-chained audit log.</div>
+          </div>
+          <span class="tag wip">WIP</span>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="foot-brand"><strong>BLACKNODE</strong> // blacknode.cx</div>
+      <p>An independent software practice in Mackay, Queensland, Australia.</p>
+      <p>Contact: to be listed.</p>
+      <p class="mute">System version Q1 2026.4 · The live engine is at Core · This site does not collect accounts or keys.</p>
+    </footer>
+  </div>
+</body>
+</html>
