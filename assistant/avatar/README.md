@@ -21,7 +21,8 @@ app state to a named clip and crossfades over `crossFade` seconds (0.4) on every
   that material is kept as authored. Any material with emissive, clearcoat, iridescence or metal
   is replaced at runtime with soft white `MeshStandardMaterial` (roughness 0.6).
 - Budget: under ~1.5 MB and under ~40k vertices (it renders at 56 to 112 device px).
-  `scripts/build_mascot_glb.mjs` shows the pipeline: texture swap, simplify 0.3, 1024px JPEG, meshopt.
+  The current file is SplatForge's final web build (481 KB, 25.6k verts, meshopt + quantization + WebP).
+  `scripts/build_mascot_glb.mjs` is the earlier in-house pipeline (texture swap, simplify 0.3, JPEG, meshopt).
 
 ## manifest.json
 ```json
