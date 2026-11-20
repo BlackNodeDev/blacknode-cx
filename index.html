@@ -2,199 +2,360 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0f">
 <meta name="color-scheme" content="dark">
-<title>BlackNode — AI teammates for building games and software</title>
-<meta name="description" content="BlackNode builds AI teammates and tools for making games and software. Core is the live engine: plan, write, audit and verify, then ship.">
-<meta property="og:title" content="BlackNode — AI teammates for building games and software">
-<meta property="og:description" content="BlackNode builds AI teammates and tools for making games and software. Core is the live engine: plan, write, audit and verify, then ship.">
+<title>BlackNode — Build apps and get answers with free live AI</title>
+<meta name="description" content="BlackNode makes two free AI tools that run in your browser: Core, a conversational app builder with five bots and real audit gates, and Vanta, an AI chat with free live AI, an on-device offline mode and voice. No key needed.">
+<meta property="og:title" content="BlackNode — Core and Vanta">
+<meta property="og:description" content="Core builds working web apps, Godot 4 scripts and Python from a chat. Vanta is a free AI chat that can also run offline on-device. Both run in your browser, no key needed.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0a0f'/%3E%3Cpath d='M7 7h6M7 7v6M25 25h-6M25 25v-6' stroke='%23e024d6' stroke-width='2.4' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='4.5' fill='none' stroke='%23e024d6' stroke-width='2.4'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--bg2:#0d0d14;--surface:#12121a;--surface2:#171721;--line:#242432;--line2:#30303f;--text:#ececf1;--text2:#b4b4c0;--mute:#80808f;
+--mg:#e024d6;--mg2:#ff4ef0;--violet:#885cf5;--blue:#3c82f6;--green:#5bc67a;--orange:#ed712e;--cyan:#54b9a6;
+--display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;--body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.6 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.025em;margin:0;line-height:1.08}
+p{margin:0}
+::selection{background:var(--mg);color:#fff}
+:focus-visible{outline:2px solid var(--mg);outline-offset:3px;border-radius:6px}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(224,36,214,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(224,36,214,.04) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 30%,transparent 85%);mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 30%,transparent 85%)}
+.wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+.label{font:600 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.label .mg{color:var(--mg)}
+.mg{color:var(--mg)}
+.cyber{position:relative}
+.cyber::before,.cyber::after{content:"";position:absolute;width:10px;height:10px;border:solid var(--mg);pointer-events:none}
+.cyber::before{top:-1px;left:-1px;border-width:2px 0 0 2px}
+.cyber::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:12px;font:600 15px/1 var(--display);letter-spacing:.01em;border:1px solid var(--line2);transition:transform .15s,box-shadow .15s,border-color .15s,background .15s;white-space:nowrap}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--mg);border-color:var(--mg);color:#0a0a0f;box-shadow:0 0 28px -8px var(--mg)}
+.btn-primary:hover{box-shadow:0 0 36px -4px var(--mg)}
+.btn-ghost{background:rgba(18,18,26,.7);color:var(--text)}
+.btn-ghost:hover{border-color:var(--mg)}
+.btn-sm{min-height:40px;padding:0 16px;font-size:14px;border-radius:10px}
+.arr{transition:transform .15s}.btn:hover .arr{transform:translateX(3px)}
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(10,10,15,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:20px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font:700 13px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.logo svg{width:30px;height:30px}
+.nav-links{display:flex;gap:4px;margin-left:12px}
+.nav-links a{padding:9px 12px;border-radius:9px;color:var(--text2);font-size:14.5px;font-weight:500}
+.nav-links a:hover{color:#fff;background:var(--surface2)}
+.nav-cta{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-toggle{display:none;width:44px;height:44px;border-radius:10px;border:1px solid var(--line2);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;color:var(--text)}
+.nav-toggle svg{width:20px;height:20px}
+.mnav{display:none;border-top:1px solid var(--line);padding:8px 20px 14px}
+.mnav a{display:flex;justify-content:space-between;align-items:center;min-height:48px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text2);font-weight:500}
+.mnav a span{font:600 11px/1 var(--mono);color:var(--mute)}
+.nav.open .mnav{display:block}
+/* hero */
+.hero{position:relative;padding:72px 0 40px;text-align:center;overflow:hidden}
+.hero-glow{position:absolute;top:-60px;left:50%;width:min(900px,100%);height:520px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(224,36,214,.22),transparent 75%);pointer-events:none}
+.vchip{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line2);background:rgba(18,18,26,.85);font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text2)}
+.vchip .nw{background:var(--mg);color:#0a0a0f;padding:3px 6px;font-weight:700}
+.vchip strong{color:#fff}
+.hero h1{font-size:clamp(40px,8.4vw,80px);font-weight:700;margin:22px auto 0;max-width:15ch}
+.hero h1 .g{color:var(--mg);text-shadow:0 0 40px rgba(224,36,214,.55)}
+.lead{color:var(--text2);font-size:clamp(16px,2.2vw,19px);max-width:42rem;margin:20px auto 0}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+.fine{margin-top:16px;font:500 11.5px/1.5 var(--mono);letter-spacing:.06em;color:var(--mute)}
+/* product panel demo */
+.demo{margin:52px auto 0;max-width:980px;display:grid;grid-template-columns:1.15fr 1fr;gap:16px;text-align:left}
+.win{border:1px solid var(--line2);background:rgba(13,13,20,.92);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px -30px rgba(0,0,0,.8),0 0 60px -30px rgba(224,36,214,.5)}
+.win-top{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);font:600 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.win-top .dots{display:flex;gap:5px}.win-top .dots i{width:9px;height:9px;border-radius:50%;background:#2a2a38}
+.win-top .tag{margin-left:auto;color:var(--mg);border:1px solid rgba(224,36,214,.4);padding:4px 7px;border-radius:5px}
+.win-body{padding:16px}
+.ubub{margin-left:auto;max-width:86%;background:var(--surface2);border:1px solid var(--line2);border-radius:14px 14px 4px 14px;padding:10px 13px;font-size:14px;color:var(--text)}
+.steps{margin-top:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg2)}
+.step{display:flex;align-items:center;gap:10px;padding:9px 12px;font-size:13px;border-top:1px solid rgba(255,255,255,.04)}
+.step:first-child{border-top:0}
+.step b{font:600 12px/1 var(--mono);width:74px;flex:none}
+.step span:not(.bot){color:var(--text2);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step em{font-style:normal;color:var(--green);font-weight:700}
+.ok-card{margin-top:12px;border:1px solid var(--line2);background:var(--bg2);padding:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ok-card .t{flex:1;min-width:140px}.ok-card .t b{display:block;font:600 14px/1.2 var(--display)}.ok-card .t small{font:500 11px/1.4 var(--mono);color:var(--mute)}
+.pchip{font:600 10.5px/1 var(--mono);padding:6px 8px;border-radius:6px;border:1px solid rgba(91,198,122,.4);color:var(--green)}
+.fakebtn{font:700 12px/1 var(--display);background:var(--mg);color:#0a0a0f;padding:9px 14px;border-radius:9px}
+.chatdemo .ai{display:flex;gap:10px;margin-top:14px}
+.chatdemo .ai .txt{font-size:14px;color:var(--text2);flex:1}
+.chatdemo .think{border:1px solid var(--line);border-left:2px solid var(--violet);border-radius:0 9px 9px 0;padding:8px 10px;margin-bottom:8px;font-size:12.5px;color:var(--mute);background:rgba(136,92,245,.05)}
+.chatdemo .think b{display:block;font:600 10px/1.4 var(--mono);letter-spacing:.12em;color:var(--violet);margin-bottom:3px}
+.src{margin-top:8px;font:500 11.5px/1.5 var(--mono);color:var(--mg2)}
+.cnote{font:500 10.5px/1.4 var(--mono);color:var(--mute);letter-spacing:.06em;text-align:center;margin-top:12px}
+/* bot mascots */
+.bot{--c:var(--mg);--sz:44px;position:relative;width:var(--sz);height:var(--sz);flex:none;border-radius:30%;background:var(--c);display:grid;place-items:center;box-shadow:inset 0 -4px 0 rgba(0,0,0,.14),inset 0 2px 0 rgba(255,255,255,.25),0 10px 26px -10px var(--c)}
+.bot i{display:flex;gap:calc(var(--sz)*.14)}
+.bot i::before,.bot i::after{content:"";width:calc(var(--sz)*.12);height:calc(var(--sz)*.3);border-radius:99px;background:#0a0a0f}
+.bot.xs{--sz:22px;border-radius:28%}
+.bot.sm{--sz:30px}
+.bot.lg{--sz:58px}
+.c-architect{--c:var(--violet)}.c-compiler{--c:var(--blue)}.c-security{--c:var(--green)}.c-triage{--c:var(--orange)}.c-launch{--c:var(--cyan)}.c-chat{--c:var(--mg)}
+.t-architect{color:var(--violet)}.t-compiler{color:var(--blue)}.t-security{color:var(--green)}.t-triage{color:var(--orange)}.t-launch{color:var(--cyan)}
+/* sections */
+.section{padding:88px 0;position:relative}
+.sec-head{max-width:44rem;margin-bottom:36px}
+.sec-head h2{font-size:clamp(30px,5vw,48px);margin-top:14px}
+.sec-head p{color:var(--text2);margin-top:14px;font-size:17px}
+/* products */
+.prods{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.prod{border:1px solid var(--line);background:linear-gradient(180deg,rgba(18,18,26,.95),rgba(13,13,20,.95));border-radius:18px;padding:26px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.prod::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--pc,var(--mg)),transparent);opacity:.8}
+.prod-top{display:flex;align-items:center;gap:14px}
+.prod-top h3{font-size:28px}
+.prod-top small{display:block;font:600 11px/1.4 var(--mono);letter-spacing:.12em;color:var(--mute);text-transform:uppercase;margin-top:4px}
+.live{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font:700 10.5px/1 var(--mono);letter-spacing:.12em;color:var(--green);border:1px solid rgba(91,198,122,.4);padding:6px 9px;border-radius:6px}
+.live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.prod p.d{color:var(--text2);margin-top:16px}
+.feats{list-style:none;padding:0;margin:20px 0 24px;display:grid;gap:10px}
+.feats li{display:flex;gap:10px;font-size:14.5px;color:var(--text)}
+.feats li::before{content:"";flex:none;width:7px;height:7px;margin-top:8px;border-radius:2px;background:var(--pc,var(--mg));box-shadow:0 0 8px var(--pc,var(--mg))}
+.feats li span{color:var(--text2)}
+.prod .btn{margin-top:auto;align-self:flex-start}
+.prod-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+/* pipeline */
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;counter-reset:s}
+.stage{border:1px solid var(--line);background:rgba(18,18,26,.85);border-radius:16px;padding:20px;position:relative}
+.stage .n{font:600 11px/1 var(--mono);letter-spacing:.12em;color:var(--mute);margin-top:16px;display:block}
+.stage h3{font-size:20px;margin-top:6px}
+.stage p{color:var(--text2);font-size:14px;margin-top:8px}
+.stage .role{font:700 10.5px/1 var(--mono);letter-spacing:.12em;margin-top:10px;display:block}
+.flow-note{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
+.flow-note span{font:500 12px/1 var(--mono);color:var(--text2);border:1px solid var(--line2);padding:9px 12px;border-radius:99px;background:var(--surface)}
+.flow-note b{color:var(--mg)}
+/* guardrails */
+.guards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.guard{border:1px solid var(--line);background:rgba(18,18,26,.85);border-radius:16px;padding:22px}
+.guard .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:rgba(224,36,214,.1);color:var(--mg);border:1px solid rgba(224,36,214,.25)}
+.guard .ic svg{width:20px;height:20px}
+.guard h3{font-size:18px;margin-top:16px}
+.guard p{color:var(--text2);font-size:14.5px;margin-top:8px}
+/* engines */
+.engines{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.eng{border:1px solid var(--line);border-radius:16px;padding:22px;background:var(--bg2)}
+.eng.on{border-color:rgba(224,36,214,.5);background:rgba(224,36,214,.04)}
+.eng .label{display:flex;gap:8px;align-items:center}
+.eng h3{font-size:20px;margin-top:12px}
+.eng p{color:var(--text2);font-size:14.5px;margin-top:8px}
+.tag{font:700 10px/1 var(--mono);letter-spacing:.1em;padding:4px 6px;border:1px solid currentColor;border-radius:4px}
+/* cta */
+.cta{border:1px solid var(--line2);background:radial-gradient(600px 240px at 50% 0%,rgba(224,36,214,.18),transparent),var(--bg2);padding:56px 24px;text-align:center}
+.cta h2{font-size:clamp(30px,5vw,46px)}
+.cta p{color:var(--text2);margin:14px auto 0;max-width:36rem}
+/* footer */
+footer{border-top:1px solid var(--line);padding:30px 0 calc(30px + env(safe-area-inset-bottom,0px));position:relative;z-index:1}
+footer .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+footer .brand{font:700 12px/1 var(--mono);letter-spacing:.16em;color:var(--text)}
+footer .brand span{color:var(--mute)}
+footer nav{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+footer nav a{font:500 13px/1 var(--mono);color:var(--text2);padding:10px 12px;border-radius:8px}
+footer nav a:hover{color:#fff;background:var(--surface2)}
+footer .contact{width:100%;font:500 12px/1.5 var(--mono);color:var(--mute);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media (max-width:980px){
+  .demo{grid-template-columns:1fr;max-width:560px}
+  .pipe{grid-template-columns:1fr 1fr}
+  .pipe .stage:last-child{grid-column:1/-1}
+  .guards,.engines{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  .nav-links,.btn-sm-hide{display:none}
+  .nav-toggle{display:inline-flex}
+  .prods{grid-template-columns:1fr}
+  .hero{padding:52px 0 28px}
+  .section{padding:64px 0}
+  .prod{padding:22px}
+}
+@media (max-width:560px){
+  .pipe,.guards,.engines{grid-template-columns:1fr}
+  .wrap{padding:0 16px}
+  .actions .btn{flex:1 1 100%}
+  .stage{display:grid;grid-template-columns:auto 1fr;gap:0 14px;align-items:start;padding:18px}
+  .stage .bot{grid-row:span 4}
+  .stage .n{margin-top:2px}
+  .demo{margin-top:40px}
+  footer nav{margin-left:0;width:100%}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
 </head>
 <body>
 <div class="bg-grid" aria-hidden="true"></div>
-<header class="nav">
+<header class="nav" id="nav">
   <div class="wrap">
-    <a class="logo" href="index.html" aria-label="BlackNode home"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="#14141d" stroke="#2f2f3d"/><path d="M7 7h6M7 7v6M25 25h-6M25 25v-6" stroke="#e024d6" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="4.5" fill="none" stroke="#e024d6" stroke-width="2"/></svg><span>blacknode<span class="cx">.cx</span></span></a>
+    <a class="logo" href="./" aria-label="BlackNode home"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="#14141d" stroke="#2f2f3d"/><path d="M7 7h6M7 7v6M25 25h-6M25 25v-6" stroke="#e024d6" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="4.5" fill="none" stroke="#e024d6" stroke-width="2"/></svg><span>BlackNode</span></a>
     <nav class="nav-links" aria-label="Primary">
-      <a href="products.html">Products</a>
-      <a href="bots.html">Bots</a>
-      <a href="index.html#core">Core</a>
-      <a href="index.html#guardrails">Guardrails</a>
+      <a href="./core/">Core</a>
+      <a href="./vanta/">Vanta</a>
+      <a href="#how">How it works</a>
+      <a href="#guardrails">Guardrails</a>
     </nav>
     <div class="nav-cta">
-      <a class="btn btn-ghost btn-sm btn-sm-hide" href="products.html">All products</a>
-      <a class="btn btn-primary btn-sm" href="https://perchance.org/y9qo8heenv#coreorc" target="_blank" rel="noopener">Launch Core <span class="arr">↗</span></a>
-      <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mnav"><span></span></button>
+      <a class="btn btn-ghost btn-sm btn-sm-hide" href="./vanta/">Open Vanta</a>
+      <a class="btn btn-primary btn-sm" href="./core/">Open Core <span class="arr">→</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" aria-controls="mnav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </div>
   </div>
   <div class="mnav" id="mnav">
-    <a href="products.html">Products <span>12</span></a>
-    <a href="bots.html">Bots <span>5</span></a>
-    <a href="index.html#core">Core <span>→</span></a>
-    <a href="index.html#guardrails">Guardrails <span>→</span></a>
+    <a href="./core/">Core <span>APP →</span></a>
+    <a href="./vanta/">Vanta <span>APP →</span></a>
+    <a href="#how">How it works <span>05 BOTS</span></a>
+    <a href="#guardrails">Guardrails <span>GATES</span></a>
   </div>
 </header>
 
 <main>
 <section class="hero">
-  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
   <div class="wrap">
-    <span class="chip"><span class="dot"></span>System version <b>Q1 2026.4</b></span>
-    <h1>AI teammates that <span class="grad">finish the build.</span></h1>
-    <p class="lead">BlackNode makes AI teammates and tools for building games and software. Hand Core a goal; the bots plan it, write typed code, check it and bring back something that runs.</p>
+    <span class="vchip"><span class="nw">LIVE</span> System version <strong>Q1 2026.4</strong></span>
+    <h1>Describe it. <span class="g">Core builds it.</span></h1>
+    <p class="lead">BlackNode makes two free AI tools that run in your browser. <b style="color:#fff">Core</b> turns a chat into working apps, checked by five bots before anything saves. <b style="color:#fff">Vanta</b> is a fast AI chat with Fast, Think and Imagine modes, voice, and an optional on-device AI that runs offline inside your browser.</p>
     <div class="actions">
-      <a class="btn btn-primary" href="https://perchance.org/y9qo8heenv#coreorc" target="_blank" rel="noopener">Launch Core <span class="arr">↗</span></a>
-      <a class="btn btn-ghost" href="products.html">Explore products <span class="arr">→</span></a>
+      <a class="btn btn-primary" href="./core/">Open Core <span class="arr">→</span></a>
+      <a class="btn btn-ghost" href="./vanta/">Open Vanta <span class="arr">→</span></a>
     </div>
-    <div class="panel" role="img" aria-label="Illustration of the BlackNode bot team working through a request">
-      <div class="panel-top"><div class="dots"><span></span><span></span><span></span></div><span class="t">core · new session</span><span class="chip">5 bots</span></div>
-      <div class="panel-body">
-        <div class="team"><div class="team-row"><span class="bot c-architect sm"  aria-hidden="true"><i></i></span><div class="meta"><div class="n">Architect Bot<small>Planning</small></div><div class="d">Plan ready · 2 abilities</div></div></div><div class="team-row"><span class="bot c-compiler sm"  aria-hidden="true"><i></i></span><div class="meta"><div class="n">Compiler Bot<small>Coding</small></div><div class="d">Wrote player.gd · typed</div></div></div><div class="team-row"><span class="bot c-security sm"  aria-hidden="true"><i></i></span><div class="meta"><div class="n">Security Bot<small>Review</small></div><div class="d">Scan clean · 0 secrets</div></div></div><div class="team-row"><span class="bot c-triage sm"  aria-hidden="true"><i></i></span><div class="meta"><div class="n">Triage Bot<small>Operations</small></div><div class="d">Standing by for runtime logs</div></div></div><div class="team-row on"><span class="bot c-launch sm"  aria-hidden="true"><i></i></span><div class="meta"><div class="n">Launch Bot<small>Ship</small></div><div class="d">Waiting for your OK</div></div></div></div>
-        <div class="trace">
-          <div class="h">REQUEST</div>
-          <div>“Add a double jump and air dash.”</div>
-          <div style="margin-top:12px"><span class="k">architect</span> <span class="dim">→</span> plan: player state, 2 abilities</div>
-          <div><span class="k">compiler</span> <span class="dim">→</span> player.gd · typed · 0 stubs</div>
-          <div><span class="k">security</span> <span class="dim">→</span> <span class="ok">secret scan clean</span></div>
-          <div><span class="k">verifier</span> <span class="dim">→</span> <span class="ok">second judge pass</span></div>
-          <div class="ask"><b>NEEDS YOUR OK</b>Launch Bot wants to export the build.</div>
+    <p class="fine">FREE LIVE AI · ON-DEVICE AI · VOICE · NO KEY</p>
+
+    <div class="demo" role="img" aria-label="Illustration of a Core build and a Vanta reply">
+      <div class="win cyber">
+        <div class="win-top"><span class="dots"><i></i><i></i><i></i></span>Core · build<span class="tag">5 bots</span></div>
+        <div class="win-body">
+          <div class="ubub">Build a sleek dark focus timer with session history and a sound toggle</div>
+          <div class="steps">
+            <div class="step"><span class="bot xs c-architect"><i></i></span><b class="t-architect">Architect</b><span>New web app build</span><em>✓</em></div>
+            <div class="step"><span class="bot xs c-compiler"><i></i></span><b class="t-compiler">Compiler</b><span>index.html · complete file</span><em>✓</em></div>
+            <div class="step"><span class="bot xs c-security"><i></i></span><b class="t-security">Security</b><span>No secrets, no stubs</span><em>✓</em></div>
+            <div class="step"><span class="bot xs c-triage"><i></i></span><b class="t-triage">Triage</b><span>Smoke test at 412px: 0 errors</span><em>✓</em></div>
+            <div class="step"><span class="bot xs c-launch"><i></i></span><b class="t-launch">Launch</b><span>Waiting at the Approval Gate</span><em>✓</em></div>
+          </div>
+          <div class="ok-card cyber"><span class="bot sm c-launch"><i></i></span><div class="t"><b>Needs your OK</b><small>Preview · Code · Apply</small></div><span class="pchip">✓ AUDIT CLEAN</span><span class="fakebtn">Apply</span></div>
+        </div>
+      </div>
+      <div class="win chatdemo">
+        <div class="win-top"><span class="dots"><i></i><i></i><i></i></span>Vanta<span class="tag">Think</span></div>
+        <div class="win-body">
+          <div class="ubub">Why is the sky blue? One line.</div>
+          <div class="ai"><span class="bot sm c-chat"><i></i></span><div class="txt"><div class="think"><b>▸ THOUGHT PROCESS</b>Shorter wavelengths scatter more…</div>Air molecules scatter short <b style="color:#fff">blue</b> wavelengths of sunlight far more than red ones.<div class="src">Sources: [1] Rayleigh scattering</div></div></div>
         </div>
       </div>
     </div>
-    <p class="fine">Illustration. The live session runs in Core.</p>
+    <p class="cnote">ILLUSTRATION OF REAL APP SCREENS</p>
   </div>
 </section>
-
-<section class="section" id="bots">
-  <div class="wrap">
-    <div class="sec-head row"><div><div class="label"><span class="mg">01</span> · The team</div>
-      <h2>Five bots. One per stage.</h2>
-      <p>Each bot owns a stage of the build and hands off to the next. You stay in charge of what ships.</p></div>
-      <a class="link-arrow" href="bots.html">Meet the bots →</a></div>
-    <div class="bot-grid"><div class="bot-card" style="--c:var(--violet)"><span class="bot c-architect "  aria-hidden="true"><i></i></span><div><div class="label">Planning</div><h3 style="margin-top:6px">Architect Bot</h3><p style="margin-top:6px">Turns a goal into services, state schemas and a dependency graph before a file is written.</p></div></div><div class="bot-card" style="--c:var(--blue)"><span class="bot c-compiler "  aria-hidden="true"><i></i></span><div><div class="label">Coding</div><h3 style="margin-top:6px">Compiler Bot</h3><p style="margin-top:6px">Writes statically-typed code across files and returns unified diffs. No TODO stubs.</p></div></div><div class="bot-card" style="--c:var(--green)"><span class="bot c-security "  aria-hidden="true"><i></i></span><div><div class="label">Review</div><h3 style="margin-top:6px">Security Bot</h3><p style="margin-top:6px">Runs OWASP-style checks and a zero-secret scan on every change.</p></div></div><div class="bot-card" style="--c:var(--orange)"><span class="bot c-triage "  aria-hidden="true"><i></i></span><div><div class="label">Operations</div><h3 style="margin-top:6px">Triage Bot</h3><p style="margin-top:6px">Reads runtime logs, isolates the failing line and proposes a diagnostic patch.</p></div></div><div class="bot-card" style="--c:var(--cyan)"><span class="bot c-launch "  aria-hidden="true"><i></i></span><div><div class="label">Ship</div><h3 style="margin-top:6px">Launch Bot</h3><p style="margin-top:6px">Syncs the scene, exports the build and asks for your OK before anything high-impact ships.</p></div></div></div>
-  </div>
-</section>
-
-<div class="divider"></div>
 
 <section class="section" id="products">
   <div class="wrap">
-    <div class="sec-head row"><div><div class="label"><span class="mg">02</span> · Products</div>
-      <h2>The BlackNode stack.</h2>
-      <p>Core is the engine. Around it: a browser game editor, phone shells, a deploy tool and experiments.</p></div>
-      <a class="link-arrow" href="products.html">All 12 products →</a></div>
-    <div class="p-grid"><a class="pcard feature" href="products/core.html" data-status="live" style="--c:var(--mg)">
-  <div class="art"><span class="tag live">Live</span><svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="60" cy="40" r="11"/><circle cx="60" cy="40" r="22" stroke-dasharray="3 5"/><circle cx="60" cy="40" r="34" opacity=".45"/><circle cx="82" cy="40" r="3" fill="currentColor"/><circle cx="38" cy="26" r="2.5" fill="currentColor"/><circle cx="60" cy="40" r="3" fill="currentColor"/></svg></div>
-  <div class="pcard-body"><h3>BlackNode Core<span class="go">→</span></h3><p>The live AI engine. Describe what you want built; Core plans it, writes typed code, audits it and hands back a file that runs.</p><span class="cat">AI engine</span></div>
-</a><a class="pcard" href="products/engine.html" data-status="live" style="--c:var(--blue)">
-  <div class="art"><span class="tag live">Live</span><svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M60 12 88 27v30L60 72 32 57V27z"/><path d="M32 27l28 15 28-15M60 42v30"/><path d="M46 20l28 15" opacity=".45"/></svg></div>
-  <div class="pcard-body"><h3>BlackNode Engine<span class="go">→</span></h3><p>The Godot 4.7.2 editor compiled to WebAssembly. A full game editor in one browser tab.</p><span class="cat">Game development</span></div>
-</a><a class="pcard" href="products/lumen-deploy.html" data-status="live" style="--c:var(--cyan)">
-  <div class="art"><span class="tag live">Live</span><svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M60 58V20M46 33l14-14 14 14"/><path d="M34 62h52" /><path d="M40 70h40" opacity=".45"/><circle cx="60" cy="20" r="2.5" fill="currentColor"/></svg></div>
-  <div class="pcard-body"><h3>Lumen Deploy<span class="go">→</span></h3><p>Publish a static app to GitHub Pages from your phone. Your token stays in your browser.</p><span class="cat">Publishing</span></div>
-</a><a class="pcard" href="products/launcher.html" data-status="live" style="--c:var(--violet)">
-  <div class="art"><span class="tag live">Live</span><svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="38" y="8" width="44" height="64" rx="8"/><rect x="45" y="18" width="9" height="9" rx="2"/><rect x="56" y="18" width="9" height="9" rx="2"/><rect x="67" y="18" width="9" height="9" rx="2" fill="currentColor"/><rect x="45" y="30" width="9" height="9" rx="2"/><rect x="56" y="30" width="9" height="9" rx="2"/><path d="M54 64h12"/></svg></div>
-  <div class="pcard-body"><h3>BlackNode Launcher<span class="go">→</span></h3><p>A phone-first system shell: home, notes, recents and factory programs.</p><span class="cat">Phone shell</span></div>
-</a><a class="pcard" href="products/lumen-launcher.html" data-status="live" style="--c:var(--cyan)">
-  <div class="art"><span class="tag live">Live</span><svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="38" y="8" width="44" height="64" rx="8"/><circle cx="60" cy="32" r="8"/><path d="M60 18v-3M60 49v-3M46 32h-3M77 32h-3M50 22l-2-2M72 44l-2-2M70 22l2-2M48 44l2-2"/><path d="M47 56h26M47 62h16" opacity=".6"/></svg></div>
-  <div class="pcard-body"><h3>Lumen Launcher<span class="go">→</span></h3><p>A personal web app shelf for the phone. Programs, notes and recents in a portrait shell.</p><span class="cat">Phone shell</span></div>
-</a><a class="pcard" href="products/blackllama.html" data-status="beta" style="--c:var(--orange)">
-  <div class="art"><span class="tag beta">Beta</span><svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M30 18h48a8 8 0 0 1 8 8v20a8 8 0 0 1-8 8H50l-12 10v-10h-8a8 8 0 0 1-8-8V26a8 8 0 0 1 8-8z"/><path d="M38 31h34M38 41h22"/><circle cx="92" cy="20" r="3" fill="currentColor"/></svg></div>
-  <div class="pcard-body"><h3>BlackLlama<span class="go">→</span></h3><p>Single-file AI chat with local memory, optional image generation, Wikipedia search and a sandboxed HTML preview.</p><span class="cat">AI chat</span></div>
-</a><a class="pcard" href="products/hydrogen.html" data-status="beta" style="--c:var(--blue)">
-  <div class="art"><span class="tag beta">Beta</span><svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="60" cy="40" r="6" fill="currentColor"/><ellipse cx="60" cy="40" rx="34" ry="12"/><ellipse cx="60" cy="40" rx="34" ry="12" transform="rotate(60 60 40)" opacity=".55"/><ellipse cx="60" cy="40" rx="34" ry="12" transform="rotate(-60 60 40)" opacity=".55"/><circle cx="94" cy="40" r="2.5" fill="currentColor"/></svg></div>
-  <div class="pcard-body"><h3>Hydrogen Playground<span class="go">→</span></h3><p>A phone-first super-agent playground: a planner, parallel tools, a generative canvas and an on-device vault.</p><span class="cat">Agent playground</span></div>
-</a></div>
+    <div class="sec-head"><div class="label"><span class="mg">01</span> · Products</div>
+      <h2>Two apps. Both live today.</h2>
+      <p>Each one is a single web app. Open it on your phone or desktop and start. No key, no account. Your work stays on your device.</p></div>
+    <div class="prods">
+      <article class="prod cyber" style="--pc:var(--mg)">
+        <div class="prod-top"><svg width="52" height="52" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="#14141d" stroke="#2f2f3d"/><path d="M7 7h6M7 7v6M25 25h-6M25 25v-6" stroke="#e024d6" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="4.5" fill="none" stroke="#e024d6" stroke-width="2"/></svg><div><h3>Core</h3><small>Conversational AI builder</small></div><span class="live">LIVE</span></div>
+        <p class="d">Describe an app in plain words. Five bots plan it, write it, audit it, smoke-test it and hand it back running. Keep chatting to change it.</p>
+        <ul class="feats">
+          <li><div><b>Web apps</b> <span>with live Preview, Code view and one-tap download</span></div></li>
+          <li><div><b>Godot 4</b> <span>typed GDScript and scenes, with a canvas physics sandbox</span></div></li>
+          <li><div><b>Python</b> <span>typed code and unit tests that run right in the browser</span></div></li>
+          <li><div><b>Bots control room</b> <span>gate switches, run stats and a full activity log</span></div></li>
+          <li><div><b>Approval step</b> <span>nothing saves to your project until you tap Apply</span></div></li>
+          <li><div><b>Any engine</b> <span>free live AI, on-device offline AI, or your own xAI Grok, Groq or Gemini key</span></div></li>
+        </ul>
+        <div class="prod-acts"><a class="btn btn-primary" href="./core/">Open Core <span class="arr">→</span></a></div>
+      </article>
+      <article class="prod" style="--pc:var(--violet)">
+        <div class="prod-top"><span class="bot lg c-chat"><i></i></span><div><h3>Vanta</h3><small>AI chat · live or on-device</small></div><span class="live">LIVE</span></div>
+        <p class="d">A sharp AI chat for questions, writing, code and ideas. Answers stream in live for free, or run fully offline on a small model inside your browser.</p>
+        <ul class="feats">
+          <li><div><b>Fast, Think, Imagine</b> <span>quick answers, visible reasoning, or free image generation</span></div></li>
+          <li><div><b>On-device offline AI</b> <span>a small model downloads once, then runs in your browser with no internet</span></div></li>
+          <li><div><b>Voice</b> <span>Speak on every reply, read-aloud and a hands-free voice mode</span></div></li>
+          <li><div><b>Your keys, optional</b> <span>xAI Grok, Groq, Gemini, OpenRouter, Ollama or LM Studio</span></div></li>
+          <li><div><b>Your data</b> <span>Wikipedia sources, code preview, knowledge notes and JSON backup, all on your device</span></div></li>
+        </ul>
+        <div class="prod-acts"><a class="btn btn-ghost" href="./vanta/">Open Vanta <span class="arr">→</span></a></div>
+      </article>
+    </div>
   </div>
 </section>
 
-<div class="divider"></div>
-
-<section class="section" id="how">
+<section class="section" id="how" style="padding-top:24px">
   <div class="wrap">
-    <div class="sec-head"><div class="label"><span class="mg">03</span> · How it works</div>
-      <h2>A closed loop, not a snippet.</h2>
-      <p>Core takes intent and runs it all the way through. The output is a complete file you can run.</p></div>
-    <div class="steps">
-      <div class="box ticks step"><div class="num">01 · SCAN</div><h3>Read the workspace</h3><p>Multi-file context first, so the plan fits the code that already exists.</p><div class="io">in: goal + project</div></div>
-      <div class="box step"><div class="num">02 · GENERATE</div><h3>Write typed code</h3><p>Statically-typed output across files, delivered as diffs. No TODOs left behind.</p><div class="io">out: unified diff</div></div>
-      <div class="box step"><div class="num">03 · AUDIT</div><h3>Check for risk</h3><p>OWASP-style checks and a zero-secret scan before anything moves on.</p><div class="io">gate: security review</div></div>
-      <div class="box ticks step"><div class="num">04 · VERIFY</div><h3>Prove it runs</h3><p>An independent verifier re-checks the build, then it runs in the live viewport.</p><div class="io">status: ready to deploy</div></div>
+    <div class="sec-head"><div class="label"><span class="mg">02</span> · How it works</div>
+      <h2>Five teammates, one pipeline.</h2>
+      <p>Every Core build passes through the same five bots. Each one owns a stage, and you can see what each did in the Bots tab.</p></div>
+    <div class="pipe">
+      <div class="stage"><span class="bot c-architect"><i></i></span><span class="n">STAGE 01</span><h3>Architect</h3><span class="role t-architect">PLAN</span><p>Reads your request and the project. With Plan Review on, it shows a plan first.</p></div>
+      <div class="stage"><span class="bot c-compiler"><i></i></span><span class="n">STAGE 02</span><h3>Compiler</h3><span class="role t-compiler">CODE</span><p>Writes complete files with the live AI. No snippets, no placeholders.</p></div>
+      <div class="stage"><span class="bot c-security"><i></i></span><span class="n">STAGE 03</span><h3>Security</h3><span class="role t-security">REVIEW</span><p>Scans for API keys, TODOs, stubs, untyped code and risky calls.</p></div>
+      <div class="stage"><span class="bot c-triage"><i></i></span><span class="n">STAGE 04</span><h3>Triage</h3><span class="role t-triage">TEST</span><p>Parses every script and runs web apps in a hidden phone-sized sandbox. If it breaks, Triage sends it back for one repair.</p></div>
+      <div class="stage"><span class="bot c-launch"><i></i></span><span class="n">STAGE 05</span><h3>Launch</h3><span class="role t-launch">SHIP</span><p>Packages the result and waits at the Approval Gate for you.</p></div>
     </div>
-    <div class="compare">
-      <div class="box old"><div class="label">Typical AI output</div><div class="v">Isolated snippets</div><p style="margin-top:8px">A prompt in, a partial function out, often with a TODO still in the body.</p></div>
-      <div class="box ticks"><div class="label">BlackNode Core</div><div class="v mg">Scan → Typed → Audit → Verify</div><p style="margin-top:8px">The loop finishes with a complete, executable file and a clear status.</p></div>
+    <div class="flow-note"><span><b>→</b> Then keep chatting: “add a dark mode”, “make it faster”</span><span><b>↓</b> Download the file or export the whole project</span></div>
+  </div>
+</section>
+
+<section class="section" id="guardrails" style="padding-top:24px">
+  <div class="wrap">
+    <div class="sec-head"><div class="label"><span class="mg">03</span> · Guardrails</div>
+      <h2>Real checks, not promises.</h2>
+      <p>These run in your browser on every build. Flip them in Core’s Bots tab and the next build changes.</p></div>
+    <div class="guards">
+      <div class="guard"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><h3>Approval Gate</h3><p>Builds wait as a draft with Preview, Code and Apply. Nothing touches your project until you say so.</p></div>
+      <div class="guard"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h3>Secret scan</h3><p>API keys, tokens and hardcoded passwords hold the build before it can be saved.</p></div>
+      <div class="guard"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></div><h3>Zero-TODO</h3><p>TODO, FIXME and stub functions count as errors, so unfinished code can’t slip through.</p></div>
+      <div class="guard"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div><h3>412px smoke test</h3><p>Web apps run in a hidden phone-width sandbox. Runtime errors and sideways overflow are caught before Preview.</p></div>
+      <div class="guard"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div><h3>Strict typing</h3><p>Godot and Python code must be typed. Every function, every parameter.</p></div>
+      <div class="guard"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>Your device, your keys</h3><p>Projects and chats stay in your browser. If you add your own API key, it is only sent to the provider you chose and never exported.</p></div>
     </div>
   </div>
 </section>
 
-<section class="section" id="core" style="padding-top:0">
+<section class="section" style="padding-top:24px">
   <div class="wrap">
-    <div class="sec-head"><div class="label"><span class="mg">04</span> · Inside Core</div>
-      <h2>One engine, three surfaces.</h2>
-      <p>A conversational Orchestrator, a live Godot viewport to prove the work, and an offline studio beside them.</p></div>
-    <div class="bento">
-      <div class="box b-a"><div class="label">Orchestrator</div><h3>Sessions, stages, verification</h3><p>The console for the whole platform: prompt dispatch, persisted threads and a verifier after every compile.</p>
-        <div class="orbit"><span class="on">Plan</span><span class="on">Code</span><span>Review</span><span>Operate</span><span>Verify</span></div></div>
-      <div class="box b-b"><div class="label">Godot vehicle</div><h3>Every prompt becomes a playable scene</h3><p>Natural language in, typed GDScript and a running scene out.</p>
-        <div class="viewport" aria-hidden="true"><div class="hud">viewport · 2D physics</div><div class="plat" style="left:8%;width:30%;bottom:22%"></div><div class="plat" style="left:44%;width:22%;bottom:42%"></div><div class="plat" style="left:72%;width:22%;bottom:62%"></div><div class="plat" style="left:0;width:100%;bottom:0;height:10%;border-top-color:#2f2f3d"></div><span class="bot c-launch xs" style="left:50%;bottom:calc(42% + 8px)" aria-hidden="true"><i></i></span></div></div>
-      <div class="box b-c"><div class="label">Studio OS</div><h3>An offline studio, fused into Core</h3><p>Local-first and keyless. Everything is stored per user, on the device.</p>
-        <div class="os"><div><b>DOCS</b><span>Offline markdown with a live reading view.</span></div><div><b>GRID</b><span>A formula sheet with refs, ranges, SUM and IF. CSV export.</span></div><div><b>VAULT</b><span>Secrets stay on the device and are redacted in logs.</span></div><div><b>NODECORE AI</b><span>Tools-first answers over your docs and sheets.</span></div></div></div>
+    <div class="sec-head"><div class="label"><span class="mg">04</span> · Engines</div>
+      <h2>Free by default. Yours if you want.</h2>
+      <p>Both apps work the moment they open. Switch engines any time in settings.</p></div>
+    <div class="engines">
+      <div class="eng on"><div class="label"><span class="tag mg">DEFAULT</span></div><h3>Free Live AI</h3><p>A real reasoning model served free by pollinations.ai. No key, no sign-up. It’s a shared service, so busy times can be slower.</p></div>
+      <div class="eng"><div class="label"><span class="tag" style="color:var(--cyan)">IN-BROWSER</span></div><h3>On-Device Offline AI</h3><p>A small open model (SmolLM2 or Qwen2.5) downloads once and runs inside your browser with WebGPU or CPU. Works offline. Best for lighter jobs.</p></div>
+      <div class="eng"><div class="label"><span class="tag" style="color:var(--violet)">BYO KEY</span></div><h3>Your own provider</h3><p>Plug in an xAI Grok key, a free key from Groq, Gemini or OpenRouter, or point at Ollama (Termux), LM Studio or any OpenAI-compatible URL.</p></div>
+      <div class="eng"><div class="label"><span class="tag" style="color:var(--green)">OFFLINE</span></div><h3>Offline Starter</h3><p>In Core only: a template generator that works with no connection. Clearly labelled, never passed off as AI.</p></div>
     </div>
   </div>
 </section>
 
-<div class="divider"></div>
-<section class="section" id="guardrails">
+<section class="section" style="padding-top:8px">
   <div class="wrap">
-    <div class="sec-head"><div class="label"><span class="mg">05</span> · Guardrails</div>
-      <h2>Autonomous, never unsupervised.</h2>
-      <p>Bots handle safe changes on their own. Anything sensitive stops and waits for you, inside Core.</p></div>
-    <div class="guard">
-      <div class="box"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><h3>Allow, ask, deny</h3><p>Every sensitive action has a rule. Ask pauses for a one-time or session approval; deny blocks it outright.</p>
-        <div class="policy"><span class="a">ALLOW</span><span class="q">ASK</span><span class="d">DENY</span></div></div>
-      <div class="box"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></div><h3>Hash-chained audit log</h3><p>Every event lands in a tamper-evident chain you can verify and export.</p></div>
-      <div class="box"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 20c.8-3 2.8-4.5 5-4.5s4.2 1.5 5 4.5M13 17.5c.7-1.3 1.8-2 3-2 2.2 0 4.2 1.5 5 4.5"/></svg></div><h3>Independent verifier</h3><p>A compile can face a second judge with no context from the first, so mistakes don't grade themselves.</p></div>
-      <div class="box"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M15 8l2 2"/><path d="M4 4l16 16" opacity=".0"/></svg></div><h3>Zero stored credentials</h3><p>No keys in the page, no keys in code. Secrets stay in an on-device vault.</p></div>
+    <div class="cta cyber">
+      <h2>Start with a sentence.</h2>
+      <p>Open Core and describe the app you want, or ask Vanta anything. No setup.</p>
+      <div class="actions"><a class="btn btn-primary" href="./core/">Open Core <span class="arr">→</span></a><a class="btn btn-ghost" href="./vanta/">Open Vanta <span class="arr">→</span></a></div>
     </div>
   </div>
-</section>
-<section class="section" style="padding-top:0">
-  <div class="wrap"><div class="cta">
-    <div class="bot-row"><span class="bot c-architect bob" style="animation-delay:0.0s" aria-hidden="true"><i></i></span><span class="bot c-compiler bob" style="animation-delay:0.4s" aria-hidden="true"><i></i></span><span class="bot c-security bob" style="animation-delay:0.8s" aria-hidden="true"><i></i></span><span class="bot c-triage bob" style="animation-delay:1.2000000000000002s" aria-hidden="true"><i></i></span><span class="bot c-launch bob" style="animation-delay:1.6s" aria-hidden="true"><i></i></span></div>
-    <h2>Put the team to work.</h2><p>Core is live. Describe what you want built and watch the bots take it from plan to playable.</p>
-    <div class="actions"><a class="btn btn-primary" href="https://perchance.org/y9qo8heenv#coreorc" target="_blank" rel="noopener">Launch Core <span class="arr">↗</span></a><a class="btn btn-ghost" href="products.html">Browse products</a></div>
-  </div></div>
 </section>
 </main>
-<footer class="foot">
+
+<footer>
   <div class="wrap">
-    <div class="foot-grid">
-      <div class="foot-brand">
-        <a class="logo" href="index.html"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="#14141d" stroke="#2f2f3d"/><path d="M7 7h6M7 7v6M25 25h-6M25 25v-6" stroke="#e024d6" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="4.5" fill="none" stroke="#e024d6" stroke-width="2"/></svg><span>blacknode<span class="cx">.cx</span></span></a>
-        <p>AI teammates and tools for building games and software.</p>
-      </div>
-      <div><h4>Live</h4><ul><li><a href="products/core.html">BlackNode Core</a></li><li><a href="products/engine.html">BlackNode Engine</a></li><li><a href="products/launcher.html">BlackNode Launcher</a></li><li><a href="products/lumen-launcher.html">Lumen Launcher</a></li><li><a href="products/lumen-deploy.html">Lumen Deploy</a></li></ul></div>
-      <div><h4>Explore</h4><ul>
-        <li><a href="products.html">All products</a></li>
-        <li><a href="products.html#beta">Beta</a></li>
-        <li><a href="bots.html">Bots</a></li>
-        <li><a href="index.html#guardrails">Guardrails</a></li></ul></div>
-      <div><h4>Company</h4><ul>
-        <li><a href="https://perchance.org/y9qo8heenv#coreorc" target="_blank" rel="noopener">Launch Core ↗</a></li>
-        <li><span>Contact: to be listed</span></li></ul></div>
-    </div>
-    <div class="foot-base">
-      <span>© 2026 BlackNode · System version Q1 2026.4</span>
-      <span>No accounts or keys collected on this site. Godot is an independent open-source project; BlackNode is not affiliated.</span>
-    </div>
+    <div class="brand">BLACKNODE <span>//</span> blacknode.cx</div>
+    <nav aria-label="Footer"><a href="./core/">Core</a><a href="./vanta/">Vanta</a><a href="#how">How it works</a><a href="#guardrails">Guardrails</a></nav>
+    <div class="contact"><span>Contact: to be listed.</span><span>Q1 2026.4</span></div>
   </div>
 </footer>
-<script src="assets/main.js" defer></script>
+<script>
+(function(){var n=document.getElementById('nav'),t=document.getElementById('navToggle');
+t.addEventListener('click',function(){var o=n.classList.toggle('open');t.setAttribute('aria-expanded',String(o));});
+document.querySelectorAll('#mnav a').forEach(function(a){a.addEventListener('click',function(){n.classList.remove('open');t.setAttribute('aria-expanded','false');});});})();
+</script>
 </body>
 </html>
