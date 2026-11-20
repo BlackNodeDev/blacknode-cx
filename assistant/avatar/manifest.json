@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "name": "BlackNode",
+  "size": 512,
+  "background": "#0b0b10",
+  "transitionMs": 500,
+  "states": {
+    "idle": {
+      "video": "idle.mp4",
+      "webm": "idle.webm",
+      "poster": "idle.png",
+      "motion": "bob",
+      "label": "",
+      "frame": {
+        "scale": 1.75,
+        "x": 0.5,
+        "y": 0.49
+      }
+    },
+    "thinking": {
+      "video": "thinking.mp4",
+      "webm": "thinking.webm",
+      "poster": "thinking.png",
+      "motion": "tilt",
+      "label": "Thinking…",
+      "frame": {
+        "scale": 1.75,
+        "x": 0.42,
+        "y": 0.46
+      }
+    },
+    "talking": {
+      "video": "talking.mp4",
+      "webm": "talking.webm",
+      "poster": "talking.png",
+      "motion": "talk",
+      "label": "Writing reply",
+      "frame": {
+        "scale": 1.75,
+        "x": 0.5,
+        "y": 0.49
+      }
+    },
+    "working": {
+      "video": "working.mp4",
+      "webm": "working.webm",
+      "poster": "working.png",
+      "motion": "glow",
+      "label": "Working on it",
+      "frame": {
+        "scale": 1.6,
+        "x": 0.5,
+        "y": 0.63
+      }
+    },
+    "happy": {
+      "video": "happy.mp4",
+      "webm": "happy.webm",
+      "poster": "happy.png",
+      "motion": "bounce",
+      "label": "Done",
+      "frame": {
+        "scale": 1.75,
+        "x": 0.5,
+        "y": 0.47
+      }
+    }
+  }
+}
