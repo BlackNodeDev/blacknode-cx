@@ -132,15 +132,18 @@ function md(src) {
 }
 const plain = s => String(s || '').replace(/```[\s\S]*?```/g, ' (code) ').replace(/[*_`#>|]/g, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').trim();
 
-/* ---------- AVATAR: data-driven looping clips, two stacked <video> layers, 500ms crossfade ---------- */
+/* ---------- AVATAR: manifest-driven live 3D model + clip map, poster fallback ---------- */
 const DEFAULT_MANIFEST = {
-  version: 1, name: 'BlackNode', transitionMs: 500,
+  version: 2, name: 'BlackNode', model: 'avatar/mascot.glb', crossFade: 0.4,
+  material: { mode: 'auto', color: '#f6f4f1', roughness: 0.6 },
+  clips: { idle: 'idle', thinking: 'thinking', talking: 'talking', working: 'working', happy: 'happy' },
+  frame: { y: -0.035, height: 0.8, follow: 0.12 },
   states: {
-    idle: { video: null, webm: null, poster: 'poster.jpg', motion: 'bob', label: '' },
-    thinking: { video: null, webm: null, poster: 'poster.jpg', motion: 'tilt', label: 'Thinking…' },
-    talking: { video: null, webm: null, poster: 'poster.jpg', motion: 'talk', label: 'Writing reply' },
-    working: { video: null, webm: null, poster: 'poster.jpg', motion: 'glow', label: 'Working on it' },
-    happy: { video: null, webm: null, poster: 'poster.jpg', motion: 'bounce', label: 'Done' }
+    idle: { poster: 'poses/idle.png', motion: 'bob', label: '' },
+    thinking: { poster: 'poses/thinking.png', motion: 'tilt', label: 'Thinking…' },
+    talking: { poster: 'poses/talking.png', motion: 'talk', label: 'Writing reply' },
+    working: { poster: 'poses/working.png', motion: 'glow', label: 'Working on it' },
+    happy: { poster: 'poses/happy.png', motion: 'bounce', label: 'Done' }
   }
 };
 const ACC = {
@@ -149,53 +152,45 @@ const ACC = {
   talking: '<svg viewBox="0 0 24 24"><path d="M6 10v4M10 7v10M14 9v6M18 11v2"/></svg>',
   happy: '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>'
 };
+/* Avatar: live rigged 3D model (three.js + AnimationMixer) with a poster fallback.
+   App code only ever calls Avatar.set(state, task); the 3D module crossfades the matching clip. */
+const reduceMotionOn = () => !!S().reduceMotion || matchMedia('(prefers-reduced-motion: reduce)').matches;
 const Avatar = {
-  manifest: DEFAULT_MANIFEST, base: 'avatar/', state: null, tok: 0, task: '', previewT: 0, sources: {},
+  manifest: DEFAULT_MANIFEST, base: 'avatar/', state: null, task: '', previewT: 0, r3d: null, mode: 'poster', thumbs: {}, info: null, error: '',
   resolve(p) { if (!p) return ''; if (/^(data:|blob:|https?:|\/)/.test(p)) return p; return this.base + p; },
   entry(s) { return (this.manifest.states && this.manifest.states[s]) || this.manifest.states.idle || DEFAULT_MANIFEST.states.idle; },
+  thumb(s) { return this.thumbs[s] || this.resolve(this.entry(s).poster); },
   async init() {
     if (window.BN_AVATAR_MANIFEST) { this.manifest = window.BN_AVATAR_MANIFEST; this.base = window.BN_AVATAR_BASE || ''; }
     else if (location.protocol !== 'file:') {
-      try { const r = await fetch('avatar/manifest.json', { cache: 'no-cache' }); if (r.ok) this.manifest = await r.json(); } catch (e) { /* keep defaults */ }
+      try { const r = await fetch('avatar/manifest.json', { cache: 'no-cache' }); if (r.ok) this.manifest = { ...DEFAULT_MANIFEST, ...(await r.json()) }; } catch (e) { /* keep defaults */ }
     }
-    this.ms = +this.manifest.transitionMs || 500;
-    $$('.av-layer').forEach(l => l.style.transition = `opacity ${this.ms}ms ease`);
-    // preload posters so the crossfade never flashes
-    const seen = new Set(); for (const k in this.manifest.states) { const p = this.resolve(this.manifest.states[k].poster); if (p && !seen.has(p)) { seen.add(p); const im = new Image(); im.src = p; } }
     this.applyName();
-    const cur = $('.av-layer[data-slot="current"]'); this.load(cur, 'idle'); this.state = 'idle'; $('#avHost').dataset.state = 'idle';
-  },
-  applyName() { const n = S().avatarName || 'BlackNode'; $('#avName').textContent = n; $('#avBtn').setAttribute('aria-label', n + ' — what I\'m working on'); $('#avPill').setAttribute('aria-label', n + ' status'); },
-  /** Per-state framing: scale the clip and move the point (x,y) (0..1 of the frame) to the circle centre. */
-  frameCSS(s) {
-    const f = this.entry(s).frame || {}; const k = +f.scale || 1, x = f.x ?? 0.5, y = f.y ?? 0.5;
-    if (k === 1 && x === 0.5 && y === 0.5) return '';
-    return `translate(${(k * (0.5 - x) * 100).toFixed(2)}%, ${(k * (0.5 - y) * 100).toFixed(2)}%) scale(${k})`;
-  },
-  hasVideo(s) { const e = this.entry(s); return !!(e.video || e.webm); },
-  load(layer, s) {
-    const e = this.entry(s), v = layer.querySelector('video');
-    v.poster = this.resolve(e.poster);
-    layer.dataset.state = s; layer.dataset.motion = e.motion || 'bob';
-    const fr = this.frameCSS(s); layer.style.transform = fr; layer.style.borderRadius = fr ? '0' : '';
-    const key = (e.webm || '') + '|' + (e.video || '');
-    if (e.video || e.webm) {
-      layer.dataset.mode = 'video';
-      if (v.dataset.key !== key) {
-        v.dataset.key = key; v.innerHTML = '';
-        if (e.webm) { const so = document.createElement('source'); so.src = this.resolve(e.webm); so.type = 'video/webm'; v.appendChild(so); }
-        if (e.video) { const so = document.createElement('source'); so.src = this.resolve(e.video); so.type = 'video/mp4'; v.appendChild(so); }
-        const last = v.lastElementChild; if (last) last.addEventListener('error', () => { layer.dataset.mode = 'poster'; }, { once: true });
-        v.load();
-      }
-      try { v.currentTime = 0; } catch (_) { }
-      const p = v.play(); if (p && p.catch) p.catch(() => { });
-      return v;
+    const host = $('#avHost'); host.dataset.mode = 'poster';
+    this.state = null; this.set('idle');
+    if (this.r3d) { try { this.r3d.dispose(); } catch (_) { } this.r3d = null; }
+    const model = window.BN_AVATAR_MODEL || this.manifest.model;
+    if (!model) return;
+    try {
+      const mod = await import(window.BN_AVATAR3D_URL || './avatar3d.js');
+      const clip = $('#avBtn .av-clip');
+      this.r3d = await mod.createAvatar3D({
+        container: clip, url: model, cfg: this.manifest, reduceMotion: reduceMotionOn,
+        isShown: () => +getComputedStyle(host).opacity > 0.02
+      });
+      this.info = this.r3d.info;
+      this.r3d.setState(this.state || 'idle');
+      try { this.thumbs = this.r3d.snapshots(160); } catch (e) { this.thumbs = {}; }
+      host.dataset.mode = '3d'; this.mode = '3d';
+      requestAnimationFrame(() => this.r3d && this.r3d.canvas.classList.add('on'));
+      if (D.ui.route === 'settings') renderSettings();
+    } catch (e) {
+      this.error = String(e && e.message || e); this.mode = 'poster'; host.dataset.mode = 'poster';
+      console.warn('[avatar] 3D unavailable, using poster:', this.error);
     }
-    layer.dataset.mode = 'poster';
-    if (v.dataset.key) { v.dataset.key = ''; v.innerHTML = ''; v.removeAttribute('src'); try { v.load(); } catch (_) { } }
-    return null;
   },
+  refreshMotion() { if (this.r3d) this.r3d.kick(); },
+  applyName() { const n = S().avatarName || 'BlackNode'; $('#avName').textContent = n; $('#avBtn').setAttribute('aria-label', n + ' — what I\'m working on'); $('#avPill').setAttribute('aria-label', n + ' status'); },
   set(state, task) {
     if (task !== undefined) this.setTask(task);
     if (!this.manifest.states[state]) state = 'idle';
@@ -203,18 +198,10 @@ const Avatar = {
     this.state = state;
     const host = $('#avHost'); host.dataset.state = state; host.classList.toggle('active', state !== 'idle');
     const acc = $('#avAcc'); acc.innerHTML = ACC[state] || ''; acc.classList.toggle('on', !!ACC[state]);
-    const tok = ++this.tok;
-    const cur = $('.av-layer[data-slot="current"]'), nxt = $('.av-layer[data-slot="next"]');
-    const v = this.load(nxt, state);
-    const go = () => {
-      if (tok !== this.tok) return;
-      nxt.style.opacity = '1'; cur.style.opacity = '0';
-      nxt.dataset.slot = 'current'; nxt.dataset.avatarLayer = 'ready';
-      cur.dataset.slot = 'next'; cur.dataset.avatarLayer = 'fading';
-      setTimeout(() => { if (cur.dataset.slot === 'next') { cur.dataset.avatarLayer = 'idle'; const ov = cur.querySelector('video'); if (ov && !ov.paused) ov.pause(); } }, this.ms + 40);
-    };
-    if (v && v.readyState < 2) { let done = false; const f = () => { if (!done) { done = true; requestAnimationFrame(go); } }; v.addEventListener('canplay', f, { once: true }); setTimeout(f, 450); }
-    else requestAnimationFrame(() => requestAnimationFrame(go));
+    const e = this.entry(state), img = $('#avPoster');
+    img.dataset.motion = e.motion || 'bob';
+    const src = this.thumb(state); if (img.getAttribute('src') !== src) img.src = src;
+    if (this.r3d) this.r3d.setState(state);
   },
   setTask(t) {
     this.task = t || '';
@@ -247,7 +234,7 @@ function openStatusSheet() {
     ...D.ideas.filter(i => i.fav).slice(0, 2).map(i => ({ label: i.title, sub: 'Favourite idea', go: 'ideas' }))
   ].slice(0, 4);
   openSheet(`
-   <div style="display:flex;align-items:center;gap:12px;margin:6px 0 6px"><span class="av-thumb" style="width:48px;height:48px;box-shadow:0 0 18px -6px var(--accent)"><img src="${esc(Avatar.resolve(Avatar.entry(Avatar.state || 'idle').poster))}" alt="" style="transform:${Avatar.frameCSS(Avatar.state || 'idle')}"></span><div><h3 style="margin:0">${name}</h3><div class="note">State: ${esc(Avatar.state || 'idle')}</div></div></div>
+   <div style="display:flex;align-items:center;gap:12px;margin:6px 0 6px"><span class="av-thumb" style="width:48px;height:48px;box-shadow:0 0 18px -6px var(--accent)"><img src="${esc(Avatar.thumb(Avatar.state || 'idle'))}" alt=""></span><div><h3 style="margin:0">${name}</h3><div class="note">State: ${esc(Avatar.state || 'idle')}</div></div></div>
    <div class="sec-label">Working on</div>
    <div class="status-list">${cur ? `<div class="srow"><span class="sdot work"></span><div><b>${esc(cur.label)}</b><small>${esc(cur.where || '')} · started ${agoLong(cur.ts)}</small></div></div>` : `<div class="srow"><span class="sdot"></span><div><b>Nothing right now</b><small>Send me something and I'll get going.</small></div></div>`}</div>
    <div class="sec-label">Finished</div>
@@ -351,6 +338,7 @@ function renderNav() {
   $('#dockNav').innerHTML = TABS.map(t => `<button class="dock-btn${r === t.id ? ' on' : ''}" data-go="${t.id}" aria-label="${t.label}" title="${t.label}">${ic(t.icon)}</button>`).join('') + `<button class="dock-btn${r === 'spaces' ? ' on' : ''}" data-go="spaces" aria-label="Spaces" title="Spaces">${ic('square-plus')}</button>`;
 }
 function go(route, opts = {}) {
+  setTimeout(() => Avatar.refreshMotion(), 320);
   if (!ROUTES.includes(route)) route = 'chat';
   D.ui.route = route; save();
   $('#app').dataset.route = route;
@@ -849,10 +837,10 @@ function renderSettings(opts = {}) {
    <div class="set-group" style="padding:14px 16px">
     <label class="fld" style="margin-top:0"><span>Assistant name</span><input class="in" id="sAvName" value="${esc(s.avatarName)}" maxlength="24"></label>
     <div class="fld" style="margin-bottom:4px"><span>Preview a state</span></div>
-    <div class="av-states">${states.map(k => { const e = M.states[k]; const v = !!(e.video || e.webm); return `<button data-act="av-preview" data-k="${k}" class="${Avatar.state === k ? 'on' : ''}"><span class="av-thumb"><img src="${esc(Avatar.resolve(e.poster))}" alt="" style="transform:${Avatar.frameCSS(k)}"></span>${esc(k)}<span class="src">${v ? 'video' : 'poster'}</span></button>`; }).join('')}</div>
-    <p class="note">Clips come from <code>avatar/manifest.json</code>. States with no video yet use the poster with a CSS motion loop. Drop rendered loops into <code>avatar/</code> and set their paths in the manifest.</p>
+    <div class="av-states">${states.map(k => `<button data-act="av-preview" data-k="${k}" class="${Avatar.state === k ? 'on' : ''}"><span class="av-thumb"><img src="${esc(Avatar.thumb(k))}" alt=""></span>${esc(k)}<span class="src">${Avatar.mode === '3d' ? 'clip' : 'poster'}</span></button>`).join('')}</div>
+    <p class="note">${Avatar.mode === '3d' ? `Live 3D model (<code>${esc(Avatar.manifest.model || '')}</code>), ${Avatar.info ? Avatar.info.clips.length : 0} animation clips blended by an animation controller.` : `3D model unavailable${Avatar.error ? ' (' + esc(Avatar.error) + ')' : ''}, showing still poses.`} Model, clip names and framing are set in <code>avatar/manifest.json</code>.</p>
     <div class="set-row" style="border-bottom:0"><div class="lbl"><b>Show live task under the avatar</b><small>e.g. "Writing reply", "Generating feed"</small></div>${sw('showTasks', s.showTasks !== false)}</div>
-    <div class="row-acts" style="margin-top:4px"><button class="btn sm" data-act="av-reload">${ic('refresh', 'sm')}Reload clips</button><button class="btn sm" data-act="av-status">Open status sheet</button></div>
+    <div class="row-acts" style="margin-top:4px"><button class="btn sm" data-act="av-reload">${ic('refresh', 'sm')}Reload model</button><button class="btn sm" data-act="av-status">Open status sheet</button></div>
    </div>
 
    <div class="set-h">Appearance</div>
@@ -860,7 +848,7 @@ function renderSettings(opts = {}) {
     <div class="set-row"><div class="lbl"><b>Accent</b></div><div class="swatches">${[['magenta', '#e041ff'], ['violet', '#a855f7'], ['cyan', '#2fd3ff'], ['green', '#3dffa2']].map(([k, c]) => `<button class="swatch${(s.accent || 'magenta') === k ? ' on' : ''}" style="background:${c}" data-act="set-accent" data-v="${k}" aria-label="${k}"></button>`).join('')}</div></div>
     <div class="set-row"><div class="lbl"><b>Text size</b></div><div class="seg" style="width:160px">${[[0.92, 'S'], [1, 'M'], [1.1, 'L']].map(([v, l]) => `<button class="${+s.fontScale === v ? 'on' : ''}" data-act="set-font" data-v="${v}">${l}</button>`).join('')}</div></div>
     <div class="set-row"><div class="lbl"><b>Grid background</b></div>${sw('grid', s.grid)}</div>
-    <div class="set-row"><div class="lbl"><b>Reduce motion</b><small>Stops avatar loops and transitions</small></div>${sw('reduceMotion', s.reduceMotion)}</div>
+    <div class="set-row"><div class="lbl"><b>Reduce motion</b><small>Holds the avatar still and stops transitions</small></div>${sw('reduceMotion', s.reduceMotion)}</div>
    </div>
 
    <div class="set-h">Voice</div>
@@ -978,10 +966,10 @@ function onClick(e) {
     case 'set-mode': S().mode = a.dataset.v; save(); renderSettings(); break;
     case 'set-accent': S().accent = a.dataset.v; save(); applyAppearance(); renderSettings({ keepScroll: true }); break;
     case 'set-font': S().fontScale = +a.dataset.v; save(); applyAppearance(); renderSettings(); break;
-    case 'set-toggle': { const k = a.dataset.k; S()[k] = !(k === 'showTasks' ? S()[k] !== false : S()[k]); save(); applyAppearance(); a.classList.toggle('on'); a.setAttribute('aria-checked', a.classList.contains('on')); if (k === 'showTasks') Avatar.setTask(Avatar.task); break; }
+    case 'set-toggle': { const k = a.dataset.k; S()[k] = !(k === 'showTasks' ? S()[k] !== false : S()[k]); save(); applyAppearance(); if (k === 'reduceMotion') Avatar.refreshMotion(); a.classList.toggle('on'); a.setAttribute('aria-checked', a.classList.contains('on')); if (k === 'showTasks') Avatar.setTask(Avatar.task); break; }
     case 'set-test': testEngine(); break;
     case 'av-preview': Avatar.preview(a.dataset.k); $$('.av-states button').forEach(x => x.classList.toggle('on', x === a)); break;
-    case 'av-reload': Avatar.state = null; Avatar.init().then(() => { renderSettings(); toast('Avatar clips reloaded'); }); break;
+    case 'av-reload': Avatar.init().then(() => { renderSettings(); toast(Avatar.mode === '3d' ? 'Avatar model reloaded' : 'Avatar model unavailable, showing poster'); }); break;
     case 'av-status': openStatusSheet(); break;
     case 'data-export': exportData(); break;
     case 'data-import': $('#importIn').click(); break;

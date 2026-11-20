@@ -1,69 +1,16 @@
 {
-  "version": 1,
+  "version": 2,
   "name": "BlackNode",
-  "size": 512,
-  "background": "#0b0b10",
-  "transitionMs": 500,
+  "model": "avatar/mascot.glb",
+  "crossFade": 0.4,
+  "material": { "mode": "auto", "color": "#f6f4f1", "roughness": 0.6 },
+  "clips": { "idle": "idle", "thinking": "thinking", "talking": "talking", "working": "working", "happy": "happy" },
+  "frame": { "y": -0.035, "height": 0.8, "follow": 0.12 },
   "states": {
-    "idle": {
-      "video": "idle.mp4",
-      "webm": "idle.webm",
-      "poster": "idle.png",
-      "motion": "bob",
-      "label": "",
-      "frame": {
-        "scale": 1.75,
-        "x": 0.5,
-        "y": 0.49
-      }
-    },
-    "thinking": {
-      "video": "thinking.mp4",
-      "webm": "thinking.webm",
-      "poster": "thinking.png",
-      "motion": "tilt",
-      "label": "Thinking…",
-      "frame": {
-        "scale": 1.75,
-        "x": 0.42,
-        "y": 0.46
-      }
-    },
-    "talking": {
-      "video": "talking.mp4",
-      "webm": "talking.webm",
-      "poster": "talking.png",
-      "motion": "talk",
-      "label": "Writing reply",
-      "frame": {
-        "scale": 1.75,
-        "x": 0.5,
-        "y": 0.49
-      }
-    },
-    "working": {
-      "video": "working.mp4",
-      "webm": "working.webm",
-      "poster": "working.png",
-      "motion": "glow",
-      "label": "Working on it",
-      "frame": {
-        "scale": 1.6,
-        "x": 0.5,
-        "y": 0.63
-      }
-    },
-    "happy": {
-      "video": "happy.mp4",
-      "webm": "happy.webm",
-      "poster": "happy.png",
-      "motion": "bounce",
-      "label": "Done",
-      "frame": {
-        "scale": 1.75,
-        "x": 0.5,
-        "y": 0.47
-      }
-    }
+    "idle":     { "poster": "poses/idle.png",     "motion": "bob",    "label": "" },
+    "thinking": { "poster": "poses/thinking.png", "motion": "tilt",   "label": "Thinking…" },
+    "talking":  { "poster": "poses/talking.png",  "motion": "talk",   "label": "Writing reply" },
+    "working":  { "poster": "poses/working.png",  "motion": "glow",   "label": "Working on it" },
+    "happy":    { "poster": "poses/happy.png",    "motion": "bounce", "label": "Done" }
   }
 }

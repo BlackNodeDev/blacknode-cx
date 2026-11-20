@@ -13,6 +13,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/"}}</script>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js" crossorigin>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -124,14 +126,13 @@
   <nav class="tabbar" id="tabbar" aria-label="Main navigation"></nav>
  </main>
 
- <!-- AVATAR HOST: two stacked looping video layers + status pill -->
+ <!-- AVATAR HOST: live 3D model canvas (added by js/avatar3d.js) over a still-pose poster + status pill -->
  <div class="av-host" id="avHost" data-avatar-host data-state="idle" data-display-stage="chat-nav">
   <div class="av-stage">
    <div class="av-btn" id="avBtn" role="button" tabindex="0" aria-label="BlackNode status: what I'm working on">
     <span class="av-ring" aria-hidden="true"></span>
     <div class="av-clip">
-     <div class="av-layer" data-slot="current" data-avatar-layer="ready" style="opacity:1"><video autoplay loop muted playsinline aria-hidden="true" preload="auto"></video></div>
-     <div class="av-layer" data-slot="next" data-avatar-layer="idle" style="opacity:0"><video autoplay loop muted playsinline aria-hidden="true" preload="auto"></video></div>
+     <img class="av-poster" id="avPoster" alt="" aria-hidden="true" data-motion="bob" src="avatar/poses/idle.png">
     </div>
     <span class="av-inset" aria-hidden="true"></span>
     <span class="av-acc" id="avAcc" aria-hidden="true"></span>
