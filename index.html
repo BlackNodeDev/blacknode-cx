@@ -3,20 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0f">
+<meta name="theme-color" content="#0b0b10">
 <meta name="color-scheme" content="dark">
 <title>BlackNode — Build apps and get answers with free live AI</title>
 <meta name="description" content="BlackNode makes two free AI tools that run in your browser: Core, a conversational app builder with five bots and real audit gates, and Vanta, an AI chat with free live AI, an on-device offline mode and voice. No key needed.">
 <meta property="og:title" content="BlackNode — Core and Vanta">
 <meta property="og:description" content="Core builds working web apps, Godot 4 scripts and Python from a chat. Vanta is a free AI chat that can also run offline on-device. Both run in your browser, no key needed.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0a0f'/%3E%3Cpath d='M7 7h6M7 7v6M25 25h-6M25 25v-6' stroke='%23e024d6' stroke-width='2.4' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='4.5' fill='none' stroke='%23e024d6' stroke-width='2.4'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0b10'/%3E%3Cpath d='M7 7h6M7 7v6M25 25h-6M25 25v-6' stroke='%23e024d6' stroke-width='2.4' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='4.5' fill='none' stroke='%23e024d6' stroke-width='2.4'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0a0f;--bg2:#0d0d14;--surface:#12121a;--surface2:#171721;--line:#242432;--line2:#30303f;--text:#ececf1;--text2:#b4b4c0;--mute:#80808f;
---mg:#e024d6;--mg2:#ff4ef0;--violet:#885cf5;--blue:#3c82f6;--green:#5bc67a;--orange:#ed712e;--cyan:#54b9a6;
---display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;--body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+:root{--bg:#0b0b10;--bg2:#111117;--surface:#16151c;--surface2:#1c1b23;--line:#222029;--line2:#2a2833;--text:#f3f1f8;--text2:#a9a5b8;--mute:#6f6b80;
+--mg:#e024d6;--mg2:#f07bff;--violet:#885cf5;--blue:#3c82f6;--green:#5bc67a;--orange:#ed712e;--cyan:#54b9a6;
+--display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;--body:'Space Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.6 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -37,14 +37,14 @@ p{margin:0}
 /* buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:12px;font:600 15px/1 var(--display);letter-spacing:.01em;border:1px solid var(--line2);transition:transform .15s,box-shadow .15s,border-color .15s,background .15s;white-space:nowrap}
 .btn:active{transform:scale(.98)}
-.btn-primary{background:var(--mg);border-color:var(--mg);color:#0a0a0f;box-shadow:0 0 28px -8px var(--mg)}
+.btn-primary{background:var(--mg);border-color:var(--mg);color:#0b0b10;box-shadow:0 0 28px -8px var(--mg)}
 .btn-primary:hover{box-shadow:0 0 36px -4px var(--mg)}
-.btn-ghost{background:rgba(18,18,26,.7);color:var(--text)}
+.btn-ghost{background:rgba(22,21,28,.7);color:var(--text)}
 .btn-ghost:hover{border-color:var(--mg)}
 .btn-sm{min-height:40px;padding:0 16px;font-size:14px;border-radius:10px}
 .arr{transition:transform .15s}.btn:hover .arr{transform:translateX(3px)}
 /* nav */
-.nav{position:sticky;top:0;z-index:50;background:rgba(10,10,15,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{position:sticky;top:0;z-index:50;background:rgba(11,11,16,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .nav .wrap{display:flex;align-items:center;gap:20px;height:64px}
 .logo{display:flex;align-items:center;gap:10px;font:700 13px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase}
 .logo svg{width:30px;height:30px}
@@ -61,8 +61,8 @@ p{margin:0}
 /* hero */
 .hero{position:relative;padding:72px 0 40px;text-align:center;overflow:hidden}
 .hero-glow{position:absolute;top:-60px;left:50%;width:min(900px,100%);height:520px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(224,36,214,.22),transparent 75%);pointer-events:none}
-.vchip{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line2);background:rgba(18,18,26,.85);font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text2)}
-.vchip .nw{background:var(--mg);color:#0a0a0f;padding:3px 6px;font-weight:700}
+.vchip{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line2);background:rgba(22,21,28,.85);font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text2)}
+.vchip .nw{background:var(--mg);color:#0b0b10;padding:3px 6px;font-weight:700}
 .vchip strong{color:#fff}
 .hero h1{font-size:clamp(40px,8.4vw,80px);font-weight:700;margin:22px auto 0;max-width:15ch}
 .hero h1 .g{color:var(--mg);text-shadow:0 0 40px rgba(224,36,214,.55)}
@@ -73,7 +73,7 @@ p{margin:0}
 .demo{margin:52px auto 0;max-width:980px;display:grid;grid-template-columns:1.15fr 1fr;gap:16px;text-align:left}
 .win{border:1px solid var(--line2);background:rgba(13,13,20,.92);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px -30px rgba(0,0,0,.8),0 0 60px -30px rgba(224,36,214,.5)}
 .win-top{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);font:600 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
-.win-top .dots{display:flex;gap:5px}.win-top .dots i{width:9px;height:9px;border-radius:50%;background:#2a2a38}
+.win-top .dots{display:flex;gap:5px}.win-top .dots i{width:9px;height:9px;border-radius:50%;background:#2a2833}
 .win-top .tag{margin-left:auto;color:var(--mg);border:1px solid rgba(224,36,214,.4);padding:4px 7px;border-radius:5px}
 .win-body{padding:16px}
 .ubub{margin-left:auto;max-width:86%;background:var(--surface2);border:1px solid var(--line2);border-radius:14px 14px 4px 14px;padding:10px 13px;font-size:14px;color:var(--text)}
@@ -86,7 +86,7 @@ p{margin:0}
 .ok-card{margin-top:12px;border:1px solid var(--line2);background:var(--bg2);padding:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ok-card .t{flex:1;min-width:140px}.ok-card .t b{display:block;font:600 14px/1.2 var(--display)}.ok-card .t small{font:500 11px/1.4 var(--mono);color:var(--mute)}
 .pchip{font:600 10.5px/1 var(--mono);padding:6px 8px;border-radius:6px;border:1px solid rgba(91,198,122,.4);color:var(--green)}
-.fakebtn{font:700 12px/1 var(--display);background:var(--mg);color:#0a0a0f;padding:9px 14px;border-radius:9px}
+.fakebtn{font:700 12px/1 var(--display);background:var(--mg);color:#0b0b10;padding:9px 14px;border-radius:9px}
 .chatdemo .ai{display:flex;gap:10px;margin-top:14px}
 .chatdemo .ai .txt{font-size:14px;color:var(--text2);flex:1}
 .chatdemo .think{border:1px solid var(--line);border-left:2px solid var(--violet);border-radius:0 9px 9px 0;padding:8px 10px;margin-bottom:8px;font-size:12.5px;color:var(--mute);background:rgba(136,92,245,.05)}
@@ -96,7 +96,7 @@ p{margin:0}
 /* bot mascots */
 .bot{--c:var(--mg);--sz:44px;position:relative;width:var(--sz);height:var(--sz);flex:none;border-radius:30%;background:var(--c);display:grid;place-items:center;box-shadow:inset 0 -4px 0 rgba(0,0,0,.14),inset 0 2px 0 rgba(255,255,255,.25),0 10px 26px -10px var(--c)}
 .bot i{display:flex;gap:calc(var(--sz)*.14)}
-.bot i::before,.bot i::after{content:"";width:calc(var(--sz)*.12);height:calc(var(--sz)*.3);border-radius:99px;background:#0a0a0f}
+.bot i::before,.bot i::after{content:"";width:calc(var(--sz)*.12);height:calc(var(--sz)*.3);border-radius:99px;background:#0b0b10}
 .bot.xs{--sz:22px;border-radius:28%}
 .bot.sm{--sz:30px}
 .bot.lg{--sz:58px}
@@ -109,7 +109,7 @@ p{margin:0}
 .sec-head p{color:var(--text2);margin-top:14px;font-size:17px}
 /* products */
 .prods{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.prod{border:1px solid var(--line);background:linear-gradient(180deg,rgba(18,18,26,.95),rgba(13,13,20,.95));border-radius:18px;padding:26px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.prod{border:1px solid var(--line);background:linear-gradient(180deg,rgba(22,21,28,.95),rgba(13,13,20,.95));border-radius:18px;padding:26px;display:flex;flex-direction:column;position:relative;overflow:hidden}
 .prod::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--pc,var(--mg)),transparent);opacity:.8}
 .prod-top{display:flex;align-items:center;gap:14px}
 .prod-top h3{font-size:28px}
@@ -125,7 +125,7 @@ p{margin:0}
 .prod-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
 /* pipeline */
 .pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;counter-reset:s}
-.stage{border:1px solid var(--line);background:rgba(18,18,26,.85);border-radius:16px;padding:20px;position:relative}
+.stage{border:1px solid var(--line);background:rgba(22,21,28,.85);border-radius:16px;padding:20px;position:relative}
 .stage .n{font:600 11px/1 var(--mono);letter-spacing:.12em;color:var(--mute);margin-top:16px;display:block}
 .stage h3{font-size:20px;margin-top:6px}
 .stage p{color:var(--text2);font-size:14px;margin-top:8px}
@@ -135,7 +135,7 @@ p{margin:0}
 .flow-note b{color:var(--mg)}
 /* guardrails */
 .guards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.guard{border:1px solid var(--line);background:rgba(18,18,26,.85);border-radius:16px;padding:22px}
+.guard{border:1px solid var(--line);background:rgba(22,21,28,.85);border-radius:16px;padding:22px}
 .guard .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:rgba(224,36,214,.1);color:var(--mg);border:1px solid rgba(224,36,214,.25)}
 .guard .ic svg{width:20px;height:20px}
 .guard h3{font-size:18px;margin-top:16px}
@@ -192,7 +192,7 @@ footer .contact{width:100%;font:500 12px/1.5 var(--mono);color:var(--mute);displ
 <div class="bg-grid" aria-hidden="true"></div>
 <header class="nav" id="nav">
   <div class="wrap">
-    <a class="logo" href="./" aria-label="BlackNode home"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="#14141d" stroke="#2f2f3d"/><path d="M7 7h6M7 7v6M25 25h-6M25 25v-6" stroke="#e024d6" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="4.5" fill="none" stroke="#e024d6" stroke-width="2"/></svg><span>BlackNode</span></a>
+    <a class="logo" href="./" aria-label="BlackNode home"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="#16151c" stroke="#2a2833"/><path d="M7 7h6M7 7v6M25 25h-6M25 25v-6" stroke="#e024d6" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="4.5" fill="none" stroke="#e024d6" stroke-width="2"/></svg><span>BlackNode</span></a>
     <nav class="nav-links" aria-label="Primary">
       <a href="./core/">Core</a>
       <a href="./vanta/">Vanta</a>
@@ -260,7 +260,7 @@ footer .contact{width:100%;font:500 12px/1.5 var(--mono);color:var(--mute);displ
       <p>Each one is a single web app. Open it on your phone or desktop and start. No key, no account. Your work stays on your device.</p></div>
     <div class="prods">
       <article class="prod cyber" style="--pc:var(--mg)">
-        <div class="prod-top"><svg width="52" height="52" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="#14141d" stroke="#2f2f3d"/><path d="M7 7h6M7 7v6M25 25h-6M25 25v-6" stroke="#e024d6" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="4.5" fill="none" stroke="#e024d6" stroke-width="2"/></svg><div><h3>Core</h3><small>Conversational AI builder</small></div><span class="live">LIVE</span></div>
+        <div class="prod-top"><svg width="52" height="52" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="#16151c" stroke="#2a2833"/><path d="M7 7h6M7 7v6M25 25h-6M25 25v-6" stroke="#e024d6" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="4.5" fill="none" stroke="#e024d6" stroke-width="2"/></svg><div><h3>Core</h3><small>Conversational AI builder</small></div><span class="live">LIVE</span></div>
         <p class="d">Describe an app in plain words. Five bots plan it, write it, audit it, smoke-test it and hand it back running. Keep chatting to change it.</p>
         <ul class="feats">
           <li><div><b>Web apps</b> <span>with live Preview, Code view and one-tap download</span></div></li>
