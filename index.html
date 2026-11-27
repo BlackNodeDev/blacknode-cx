@@ -316,7 +316,7 @@ footer.page-footer p{
         <div class="cd-unit"><b id="cdS">00</b><span>SECONDS</span></div>
       </div>
       <p class="cd-when">
-        Launch: <strong>Saturday 28 November 2026, 2:00 am AEST</strong> — Brisbane time.
+        Launch: <strong>Saturday 28 November 2026, 2:00 am AEST</strong>.
         When the clock hits zero, this page goes live on its own.
       </p>
     </div>
@@ -344,7 +344,7 @@ footer.page-footer p{
 
     <p class="demo-caption">
       Vanta — Blacknode&rsquo;s spokesperson. He moves, and he answers in captions: type in the
-      chat — or tap Say something — and he&rsquo;ll tell you about the company. Tap the +
+      chat — or tap Say something — and he&rsquo;ll walk you through the lineup. Tap the +
       beside the phone to pop up a second one and drive it like a real device.
     </p>
   </section>
@@ -407,7 +407,7 @@ footer.page-footer p{
       <p class="index">02</p>
       <h2>About</h2>
       <p class="intro">
-        Blacknode is a small, independent technology studio founded by Josh. We design and
+        Blacknode is a small, independent technology studio. We design and
         build our own products in-house — mobile-first, feather-black, and shipped under one
         name: Blacknode.
       </p>
@@ -434,7 +434,7 @@ footer.page-footer p{
 <script>
 (function(){
   /* ============ LAUNCH ============
-     Saturday 28 November 2026, 2:00 am AEST (Brisbane, UTC+10)
+     Saturday 28 November 2026, 2:00 am AEST (UTC+10)
      = 2026-11-28T02:00:00+10:00 = 2026-11-27T16:00:00Z.
      At zero the page flips itself live — no refresh. */
   var LAUNCH_MS = Date.UTC(2026, 10, 27, 16, 0, 0);
@@ -475,22 +475,29 @@ footer.page-footer p{
 
   /* ============ Vanta's company knowledge ============ */
   var LINES = [
-    "Hey \u2014 I\u2019m Vanta, Blacknode\u2019s spokesperson. Ask me about the company.",
-    "Blacknode is a technology studio. We build mobile apps, AI, graphics and software \u2014 designed mobile-first and built in-house.",
-    "Our flagship is Eclipse, the Blacknode browser. It launches right here on blacknode.cx \u2014 Saturday 28 November 2026, 2:00 am Brisbane time.",
-    "The lineup: Eclipse, Vanta \u2014 that\u2019s me \u2014 Nodeflix, Files by Blacknode, Blacknode Engine, and The Moth game, now in development.",
-    "Blacknode Engine is live right now \u2014 the full Godot editor in one browser tab. The rest rolls out from launch day."
+    "Hey \u2014 I\u2019m Vanta, Blacknode\u2019s spokesperson. I\u2019ll walk you through the lineup \u2014 or ask me anything.",
+    "Blacknode is a small, independent technology studio. We build mobile apps, AI, graphics and software \u2014 designed mobile-first and built in-house.",
+    "Our flagship is Eclipse, the Blacknode browser \u2014 clean, full-screen, and mobile-first. It\u2019s live right here on blacknode.cx.",
+    "And that\u2019s me \u2014 Vanta. I\u2019m Blacknode\u2019s assistant and the face of the studio. The Moth filling this phone screen is me.",
+    "Nodeflix is our streaming-style front end for movies and anime \u2014 part of the lineup, rolling out from launch day.",
+    "Files by Blacknode is our file manager \u2014 every build in one searchable drive.",
+    "Blacknode Engine is live right now \u2014 the full Godot 4.7.2 editor in a single browser tab. There\u2019s a link in the lineup below.",
+    "And The Moth \u2014 the game \u2014 is our mascot\u2019s own 2.5D game, in development now. That\u2019s me, in game form."
   ];
+  var STUDIO_LINE = "Blacknode is a small, independent technology studio. We design and build our own products in-house \u2014 the work is what we put our name to.";
   var REPLIES = [
-    { keys: ["eclipse","browser","launch","when","release"], reply: 2 },
-    { keys: ["engine","godot","editor","game maker"], reply: "Blacknode Engine is live right now \u2014 the full Godot 4.7.2 editor in a single browser tab. There\u2019s a link in the lineup below." },
+    { keys: ["eclipse","browser"], reply: 2 },
+    { keys: ["launch","when","release"], reply: "Eclipse, our flagship browser, is live right here on blacknode.cx \u2014 as of Saturday 28 November 2026, 2:00 am AEST." },
+    { keys: ["engine","godot","editor","game maker"], reply: "Blacknode Engine is live right now \u2014 the full Godot 4.7.2 editor in a single browser tab. There\u2019s a link in the lineup below, or head to blacknodedev.github.io/blacknode-engine." },
     { keys: ["nodeflix","movie","film","anime","stream","watch"], reply: "Nodeflix is our streaming-style front end for movies and anime \u2014 part of the lineup, rolling out from launch day." },
     { keys: ["files","file manager","drive"], reply: "Files by Blacknode is our file manager \u2014 every build in one searchable drive." },
     { keys: ["game","moth game","2.5d"], reply: "The Moth \u2014 the game is our mascot\u2019s own 2.5D game, in development now. That\u2019s me, in game form." },
-    { keys: ["vanta","who are you","your name","moth"], reply: "I\u2019m Vanta \u2014 Blacknode\u2019s assistant and spokesperson. The Moth filling this phone screen is me." },
-    { keys: ["lineup","products","make","build","apps"], reply: 3 },
-    { keys: ["blacknode","company","studio","about","founded","josh"], reply: 1 },
-    { keys: ["hello","hi","hey","yo"], reply: "Hey \u2014 good to meet you. Ask me about Blacknode, Eclipse, or anything in the lineup." },
+    { keys: ["vanta","who are you","your name","moth","spokesperson"], reply: "I\u2019m Vanta \u2014 Blacknode\u2019s assistant and spokesperson. The Moth filling this phone screen is me." },
+    { keys: ["lineup","products","make","build","apps","showcase"], reply: "The lineup: Eclipse, Vanta \u2014 that\u2019s me \u2014 Nodeflix, Files by Blacknode, Blacknode Engine, and The Moth game, now in development. Ask me about any of them." },
+    { keys: ["founder","founded","who runs","who owns","owner","ceo","who made","who created","who built","who is behind"], reply: STUDIO_LINE },
+    { keys: ["where are you","based","location","headquarters","hq","where is blacknode"], reply: "We\u2019re an independent studio \u2014 the work is what we put our name to." },
+    { keys: ["blacknode","company","studio","about"], reply: 1 },
+    { keys: ["hello","hi","hey","yo"], reply: "Hey \u2014 good to meet you. I can walk you through the lineup, or ask me about Eclipse, Nodeflix, or anything else we make." },
     { keys: ["thank","thanks","cool","nice","great","awesome"], reply: "Anytime \u2014 that\u2019s what I\u2019m here for." }
   ];
   var VIDEO_FOR = {
@@ -550,8 +557,9 @@ footer.page-footer p{
 
     var listening = false, thinking = false, talking = false;
     var activeSrc = VIDEO_FOR.idle;
-    var fadeTimer = null, talkTimer = null, replyTimer = null, listenFallbackTimer = null, greetTimer = null;
+    var fadeTimer = null, talkTimer = null, replyTimer = null, listenFallbackTimer = null, greetTimer = null, tourTimer = null;
     var lineIdx = 0;
+    var autoTour = true;
     var rec = null, recogGotResult = false;
     var greeted = false;
     var videoFailed = false;
@@ -624,8 +632,28 @@ footer.page-footer p{
     function stopTalk(){
       if (talkTimer){ clearTimeout(talkTimer); talkTimer = null; }
     }
+    function clearTour(){
+      if (tourTimer){ clearTimeout(tourTimer); tourTimer = null; }
+    }
+    function stopAutoTour(){
+      autoTour = false;
+      clearTour();
+    }
+    function scheduleTour(){
+      clearTour();
+      if (!autoTour || destroyed || listening || thinking) return;
+      tourTimer = setTimeout(function(){
+        tourTimer = null;
+        if (!autoTour || destroyed || listening || thinking || talking) return;
+        lineIdx = (lineIdx + 1) % LINES.length;
+        var line = LINES[lineIdx];
+        addBubble(line, false);
+        startTalk(line);
+      }, 4500);
+    }
     function startTalk(text){
       stopTalk();
+      clearTour();
       talking = true;
       updatePhase();
       var readingMs = Math.min(12000, 2000 + text.length * 70);
@@ -633,6 +661,7 @@ footer.page-footer p{
         talkTimer = null;
         talking = false;
         updatePhase();
+        scheduleTour();
       }, readingMs);
     }
 
@@ -685,6 +714,7 @@ footer.page-footer p{
       try{ r.start(); }catch(e){ rec = null; }
     }
     function toggleListen(){
+      stopAutoTour();
       if (replyTimer){ clearTimeout(replyTimer); replyTimer = null; }
       if (listening){
         stopRecog();
@@ -702,6 +732,21 @@ footer.page-footer p{
 
     function replyFor(text){
       var t = text.toLowerCase();
+      var hidden = [
+        [106,111,115,104],
+        [111,39,104,97,114,97],
+        [111,8217,104,97,114,97],
+        [98,114,105,115,98,97,110,101],
+        [109,97,99,107,97,121],
+        [113,117,101,101,110,115,108,97,110,100],
+        [97,117,115,116,114,97,108,105,97]
+      ];
+      for (var h = 0; h < hidden.length; h++){
+        var term = String.fromCharCode.apply(null, hidden[h]);
+        if (t.indexOf(term) !== -1){
+          return STUDIO_LINE;
+        }
+      }
       for (var i = 0; i < REPLIES.length; i++){
         var entry = REPLIES[i];
         for (var j = 0; j < entry.keys.length; j++){
@@ -719,6 +764,7 @@ footer.page-footer p{
     function submitUserText(raw){
       var text = (raw || '').trim();
       if (!text) return;
+      stopAutoTour();
       if (replyTimer){ clearTimeout(replyTimer); replyTimer = null; }
       stopRecog();
       listening = false;
@@ -738,6 +784,7 @@ footer.page-footer p{
     }
 
     function say(){
+      stopAutoTour();
       if (replyTimer){ clearTimeout(replyTimer); replyTimer = null; }
       stopRecog();
       listening = false;
@@ -750,6 +797,8 @@ footer.page-footer p{
 
     function resetDemo(){
       if (replyTimer){ clearTimeout(replyTimer); replyTimer = null; }
+      autoTour = true;
+      clearTour();
       stopRecog();
       stopTalk();
       talking = false; thinking = false; listening = false;
@@ -758,6 +807,7 @@ footer.page-footer p{
       addBubble(LINES[0], false);
       draftInput.value = '';
       updatePhase();
+      startTalk(LINES[0]);
     }
 
     form.addEventListener('submit', function(e){
@@ -793,6 +843,7 @@ footer.page-footer p{
         if (fadeTimer) clearTimeout(fadeTimer);
         if (replyTimer) clearTimeout(replyTimer);
         if (greetTimer) clearTimeout(greetTimer);
+        if (tourTimer) clearTimeout(tourTimer);
         stopTalk();
         stopRecog();
         try{ activeVideo.pause(); }catch(e){}
